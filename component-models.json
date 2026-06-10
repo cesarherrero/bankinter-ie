@@ -219,10 +219,17 @@
     "id": "hero-banner",
     "fields": [
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageUrl",
+        "label": "Image URL",
+        "value": ""
+      },
+      {
         "component": "richtext",
         "valueType": "string",
         "name": "text",
-        "label": "Content (image + heading + body)",
+        "label": "Content (heading + body)",
         "value": ""
       }
     ]
