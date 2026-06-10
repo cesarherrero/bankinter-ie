@@ -21,6 +21,7 @@
   background-color: #fff;
   border: 1px solid #e5e5e5;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   padding: 0 24px 24px;
 }
 
