@@ -1,9 +1,4 @@
 export default function decorate(block) {
-  // El bloque tiene 1 fila con todos los datos de las tarjetas en 1 columna:
-  // <h3>Título</h3>
-  // <p>Descripción</p>
-  // <p><a href="...">CTA</a></p>
-  // <h3>Siguiente tarjeta</h3> ...
   const contentCell = block.querySelector(':scope > div > div');
   if (!contentCell) return;
 
@@ -20,23 +15,24 @@ export default function decorate(block) {
       if (link) {
         current.href = link.getAttribute('href') || '';
         current.ctaText = link.textContent.trim();
-      } else {
+      } else if (!current.desc) {
         current.desc = el.textContent.trim();
       }
     }
   }
   if (current) cards.push(current);
 
-  // Colores Bankinter: amarillo #fed430 y cian #b5f0ef (alternados)
-  const accentColors = ['yellow', 'cyan'];
+  // Colores Bankinter: amarillo #fed430 (odd) y cian #b5f0ef (even)
+  const accentKeys = ['yellow', 'cyan'];
 
   const ul = document.createElement('ul');
   ul.className = 'highlights-list';
 
   cards.forEach((card, i) => {
     const li = document.createElement('li');
-    li.className = `highlights-card highlights-card--${accentColors[i % 2]}`;
+    li.className = `highlights-card highlights-card-${accentKeys[i % 2]}`;
 
+    // Cuadro de acento pequeño (icono placeholder)
     const accent = document.createElement('div');
     accent.className = 'highlights-card-accent';
     accent.setAttribute('aria-hidden', 'true');
@@ -53,7 +49,13 @@ export default function decorate(block) {
     desc.textContent = card.desc;
 
     body.append(h3, desc);
-    li.append(accent, body);
+
+    // Línea separadora de color (entre descripción y CTA)
+    const sep = document.createElement('div');
+    sep.className = 'highlights-card-sep';
+    sep.setAttribute('aria-hidden', 'true');
+
+    li.append(accent, body, sep);
 
     if (card.href) {
       const footer = document.createElement('div');
