@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    "/content/bankinter-ie/:/",
+    "/content/bankinter-ie/en/placeholders:/placeholders.json",
+    "/content/bankinter-ie/es/placeholders:/placeholders.json",
+    "/content/bankinter-ie/configuration:/.helix/config.json",
+    "/content/bankinter-ie/headers:/.helix/headers.json",
+    "/content/bankinter-ie/metadata:/metadata.json",
+    "/content/bankinter-ie/configs:/configs.json",
+    "/content/bankinter-ie/configs-dev:/configs-dev.json",
+    "/content/bankinter-ie/configs-stage:/configs-stage.json"
+  ],
+  "includes": [
+    "/content/bankinter-ie/",
+    "/content/dam/bankinter-ie/"
+  ]
+}
