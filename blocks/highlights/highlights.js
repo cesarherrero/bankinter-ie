@@ -2,12 +2,15 @@
  * highlights.js — Bloque AEM EDS: Highlights
  * Parsea contenido AEM y construye la estructura DOM esperada por highlights.css:
  *   - Modo simple (h1/h2 + descripción): renderizado como section heading con línea naranja
- *   - Modo grid (h3s presentes): construye cards en columnas. Si imageUrl existe,
- *     la primera columna muestra la imagen.
+ *   - Modo grid (h3s presentes): construye cards en columnas. Si existe una fila con
+ *     <picture> (imageUrl de AEM), la primera columna muestra la imagen.
  *
- * Campos AEM → DOM:
- *   imageUrl  → columna imagen (primera columna antes de los h3)
- *   text      → richtext con h3s que se convierten en cards
+ * Estructura HTML que genera AEM EDS:
+ *   Con imageUrl + text:
+ *     row[0] = <picture>   (imageUrl field)
+ *     row[1] = h3s + text  (text field)
+ *   Solo text:
+ *     row[0] = h1/h2/h3s + text
  */
 
 const ICON_COLORS = ['yellow', 'cyan', 'orange'];
@@ -15,10 +18,23 @@ const ICON_COLORS = ['yellow', 'cyan', 'orange'];
 export default function decorate(block) {
   if (!block) return;
 
-  // Obtener el nodo de contenido principal (primera celda)
   const rows = block.querySelectorAll(':scope > div');
-  const firstRow = rows[0];
-  const contentCell = firstRow?.querySelector(':scope > div');
+
+  // Detectar si la primera fila contiene una imagen (imageUrl de AEM → <picture>)
+  const row0Cell = rows[0]?.querySelector(':scope > div');
+  const pictureInRow0 = row0Cell?.querySelector('picture');
+
+  // Si row[0] tiene <picture>, el texto (h3s) está en row[1]; si no, todo está en row[0]
+  let imageEl = null;
+  let contentCell = null;
+
+  if (pictureInRow0 && rows.length >= 2) {
+    // Usar la picture de la primera fila como imagen del grid
+    imageEl = pictureInRow0.cloneNode(true);
+    contentCell = rows[1]?.querySelector(':scope > div');
+  } else {
+    contentCell = row0Cell;
+  }
 
   if (!contentCell) {
     block.classList.add('highlights--initialized');
@@ -39,29 +55,10 @@ export default function decorate(block) {
   if (h3s.length > 0) {
     block.innerHTML = '';
 
-    // Comprobar si existe una segunda fila con imageUrl (AEM lo convierte en <a href>)
-    let imageEl = null;
-    if (rows.length >= 2) {
-      const imgCell = rows[1]?.querySelector(':scope > div');
-      const link = imgCell?.querySelector('a');
-      const text = imgCell?.textContent?.trim();
-      if (link?.href) {
-        imageEl = document.createElement('img');
-        imageEl.src = link.href;
-        imageEl.alt = 'FAQs illustration';
-        imageEl.loading = 'lazy';
-      } else if (text && (text.startsWith('http') || text.startsWith('/'))) {
-        imageEl = document.createElement('img');
-        imageEl.src = text;
-        imageEl.alt = 'FAQs illustration';
-        imageEl.loading = 'lazy';
-      }
-    }
-
     const grid = document.createElement('div');
     grid.className = 'highlights-grid';
 
-    // Primera columna: imagen (si existe)
+    // Primera columna: imagen (si existe en imageUrl)
     if (imageEl) {
       const imgCard = document.createElement('div');
       imgCard.className = 'highlights-card highlights-card-image';
@@ -107,7 +104,7 @@ export default function decorate(block) {
 
     block.appendChild(grid);
   } else {
-    // Sin h3 → renderizado simple de texto enriquecido (section heading solo)
+    // Sin h3 → renderizado simple de texto enriquecido (section heading)
     block.classList.add('highlights--simple');
     const wrapper = document.createElement('div');
     wrapper.className = 'highlights-section-heading';
