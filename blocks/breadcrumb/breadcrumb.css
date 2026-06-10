@@ -1,0 +1,4 @@
+/* Basic styles for breadcrumb */
+.breadcrumb { font-size: .9rem; color:var(--muted-color,#666); }
+.breadcrumb a { color: var(--link-color,#0366d6); text-decoration: none; }
+.breadcrumb__sep { margin: 0 .5rem; }

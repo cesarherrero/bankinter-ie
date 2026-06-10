@@ -1,0 +1,37 @@
+/**
+ * header.css — Estilos del bloque header
+ * CSS adaptado del portal original a convenciones AEM EDS.
+ * Mobile-first. Variables CSS de :root (definidas en styles/styles.css).
+ *
+ * Generado por SA-D02 del Sprint 2 — Red Agéntica AEM
+ */
+
+/* ── Contenedor AEM EDS ── */
+.header {
+  display: block;
+  width: 100%;
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  color: var(--color-text, #333333);
+  font-family: var(--font-body, sans-serif);
+}
+
+/* ── Estado de inicialización ── */
+.header--initialized {
+  animation: none;
+}
+
+/* ── Estilos extraídos del portal original ── */
+/* Estilos para bloque AEM EDS: header */
+/* Raíces BEM: header */
+/* Extraído de: Estaticos__MBK_Home.css */
+
+/* ── Origen: Estaticos__MBK_Home.css ── */
+.header .social-icons {
+  height: 100%;
+  align-items: center;
+}
+
+.header .social-icons a {
+  line-height: 3.6rem;
+}
