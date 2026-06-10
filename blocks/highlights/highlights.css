@@ -50,13 +50,33 @@
   background-color: #b5f0ef;
 }
 
-/* Icono SVG centrado, color oscuro para contraste sobre el fondo */
+/* Icono SVG centrado — AEM EDS global CSS sobreescribe stroke con "none".
+   Se fuerzan las propiedades stroke/fill explícitamente con alta especificidad. */
 .highlights-card-accent svg {
   width: 40px;
   height: 40px;
-  color: #191b1c;
   display: block;
   flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Forzar stroke: currentColor en el SVG raíz y en todos sus hijos
+   para contrarrestar el reset global de AEM EDS */
+.highlights-card-accent svg,
+.highlights-card-accent svg path,
+.highlights-card-accent svg circle,
+.highlights-card-accent svg line,
+.highlights-card-accent svg polyline,
+.highlights-card-accent svg rect,
+.highlights-card-accent svg ellipse {
+  color: #191b1c;
+  stroke: currentColor;
+}
+
+/* El único elemento con fill explícito es el pequeño dot (fill="currentColor" stroke="none") */
+.highlights-card-accent svg circle[fill="currentColor"] {
+  fill: currentColor;
+  stroke: none;
 }
 
 /* ─── Cuerpo: título y descripción ──── */
@@ -100,7 +120,7 @@
   margin-top: auto;
 }
 
-/* CTA: color #bd4313, uppercase, letter-spacing 1px (.text-link del original) */
+/* CTA: color #bd4313, uppercase, letter-spacing (.text-link del original Bankinter) */
 .highlights-list .highlights-card-link,
 .highlights-list .highlights-card-link:any-link {
   color: #bd4313;
