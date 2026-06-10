@@ -1,8 +1,13 @@
 /**
  * highlights.js — Bloque AEM EDS: Highlights
  * Parsea contenido AEM y construye la estructura DOM esperada por highlights.css:
- *   - Section heading (h1 + h2 + descripción) — modo simple
- *   - Grid de cards (una por cada h3): título, descripción, CTA — sin iconos
+ *   - Modo simple (h1/h2 + descripción): renderizado como section heading con línea naranja
+ *   - Modo grid (h3s presentes): construye cards en columnas. Si imageUrl existe,
+ *     la primera columna muestra la imagen.
+ *
+ * Campos AEM → DOM:
+ *   imageUrl  → columna imagen (primera columna antes de los h3)
+ *   text      → richtext con h3s que se convierten en cards
  */
 
 const ICON_COLORS = ['yellow', 'cyan', 'orange'];
@@ -10,8 +15,11 @@ const ICON_COLORS = ['yellow', 'cyan', 'orange'];
 export default function decorate(block) {
   if (!block) return;
 
-  // Obtener el nodo de contenido principal
-  const contentCell = block.querySelector(':scope > div > div');
+  // Obtener el nodo de contenido principal (primera celda)
+  const rows = block.querySelectorAll(':scope > div');
+  const firstRow = rows[0];
+  const contentCell = firstRow?.querySelector(':scope > div');
+
   if (!contentCell) {
     block.classList.add('highlights--initialized');
     return;
@@ -31,25 +39,40 @@ export default function decorate(block) {
   if (h3s.length > 0) {
     block.innerHTML = '';
 
-    // Section heading: h2 y párrafo previo al primer h3
-    const firstH3 = h3s[0];
-    const headingEls = [];
-    let node = contentCell.firstElementChild;
-    while (node && node !== firstH3) {
-      headingEls.push(node);
-      node = node.nextElementSibling;
-    }
-    if (headingEls.length > 0) {
-      const headingDiv = document.createElement('div');
-      headingDiv.className = 'highlights-section-heading';
-      headingEls.forEach(el => headingDiv.appendChild(el.cloneNode(true)));
-      block.appendChild(headingDiv);
+    // Comprobar si existe una segunda fila con imageUrl (AEM lo convierte en <a href>)
+    let imageEl = null;
+    if (rows.length >= 2) {
+      const imgCell = rows[1]?.querySelector(':scope > div');
+      const link = imgCell?.querySelector('a');
+      const text = imgCell?.textContent?.trim();
+      if (link?.href) {
+        imageEl = document.createElement('img');
+        imageEl.src = link.href;
+        imageEl.alt = 'FAQs illustration';
+        imageEl.loading = 'lazy';
+      } else if (text && (text.startsWith('http') || text.startsWith('/'))) {
+        imageEl = document.createElement('img');
+        imageEl.src = text;
+        imageEl.alt = 'FAQs illustration';
+        imageEl.loading = 'lazy';
+      }
     }
 
-    // Grid
     const grid = document.createElement('div');
     grid.className = 'highlights-grid';
 
+    // Primera columna: imagen (si existe)
+    if (imageEl) {
+      const imgCard = document.createElement('div');
+      imgCard.className = 'highlights-card highlights-card-image';
+      const imgWrapper = document.createElement('div');
+      imgWrapper.className = 'highlights-card-img-wrapper';
+      imgWrapper.appendChild(imageEl);
+      imgCard.appendChild(imgWrapper);
+      grid.appendChild(imgCard);
+    }
+
+    // Cards por cada h3
     h3s.forEach((h3, idx) => {
       const card = document.createElement('div');
       card.className = `highlights-card highlights-card-${ICON_COLORS[idx % ICON_COLORS.length]}`;
@@ -57,7 +80,7 @@ export default function decorate(block) {
       // Título h3
       card.appendChild(h3.cloneNode(true));
 
-      // Descripción y CTA: elementos tras el h3 hasta el siguiente h3
+      // Descripción y CTA: elementos desde h3 hasta el siguiente h3
       const descDiv = document.createElement('div');
       descDiv.className = 'highlights-card-desc';
       let sibling = h3.nextElementSibling;
