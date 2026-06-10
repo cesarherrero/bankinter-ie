@@ -1,8 +1,8 @@
 /**
  * highlights.js — Bloque AEM EDS: Highlights
  * Parsea contenido AEM y construye la estructura DOM esperada por highlights.css:
- *   - Section heading (h2 + descripción)
- *   - Grid de cards (una por cada h3): icono, título, descripción, CTA
+ *   - Section heading (h1 + h2 + descripción) — modo simple
+ *   - Grid de cards (una por cada h3): título, descripción, CTA — sin iconos
  */
 
 const ICON_COLORS = ['yellow', 'cyan', 'orange'];
@@ -54,27 +54,6 @@ export default function decorate(block) {
       const card = document.createElement('div');
       card.className = `highlights-card highlights-card-${ICON_COLORS[idx % ICON_COLORS.length]}`;
 
-      // Icono (imagen si imageUrl disponible, sino emoji de fallback)
-      const iconDiv = document.createElement('div');
-      iconDiv.className = 'highlights-card-icon';
-      // Intentar obtener imagen del bloque (imageUrl como atributo de datos)
-      const imgEl = block.dataset?.imageUrl
-        ? (() => { const i = document.createElement('img'); i.src = block.dataset.imageUrl; i.alt = ''; return i; })()
-        : null;
-      if (imgEl) {
-        iconDiv.style.background = 'none';
-        iconDiv.style.padding = '0';
-        iconDiv.style.overflow = 'hidden';
-        imgEl.style.width = '100%';
-        imgEl.style.height = '100%';
-        imgEl.style.objectFit = 'cover';
-        iconDiv.appendChild(imgEl);
-      } else {
-        // Emoji de tarjeta de crédito como placeholder
-        iconDiv.textContent = '💳';
-      }
-      card.appendChild(iconDiv);
-
       // Título h3
       card.appendChild(h3.cloneNode(true));
 
@@ -83,6 +62,7 @@ export default function decorate(block) {
       descDiv.className = 'highlights-card-desc';
       let sibling = h3.nextElementSibling;
       const nextH3 = h3s[idx + 1] || null;
+      const ctaDivs = [];
 
       while (sibling && sibling !== nextH3) {
         const hasLink = sibling.querySelector('a') || sibling.tagName === 'A';
@@ -90,13 +70,15 @@ export default function decorate(block) {
           const ctaDiv = document.createElement('div');
           ctaDiv.className = 'highlights-card-cta';
           ctaDiv.appendChild(sibling.cloneNode(true));
-          card.appendChild(ctaDiv);
+          ctaDivs.push(ctaDiv);
         } else {
           descDiv.appendChild(sibling.cloneNode(true));
         }
         sibling = sibling.nextElementSibling;
       }
-      card.insertBefore(descDiv, card.querySelector('.highlights-card-cta'));
+
+      card.appendChild(descDiv);
+      ctaDivs.forEach(d => card.appendChild(d));
       grid.appendChild(card);
     });
 
