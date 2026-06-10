@@ -40,12 +40,17 @@ export default function decorate(block) {
       };
     } else if (currentCard) {
       if (tag === 'p') {
-        const a = node.querySelector('a');
-        if (a && !currentCard.link) {
-          currentCard.link = a.href;
-          currentCard.linkText = a.textContent.trim();
+        const links = node.querySelectorAll('a');
+        const plainText = node.textContent.trim();
+        // Solo es CTA si el <p> contiene ÚNICAMENTE un link (sin texto adicional)
+        const isCta = links.length === 1
+          && links[0].textContent.trim() === plainText
+          && !currentCard.link;
+        if (isCta) {
+          currentCard.link = links[0].href;
+          currentCard.linkText = links[0].textContent.trim();
         } else {
-          currentCard.body += node.innerHTML;
+          currentCard.body += node.outerHTML;
         }
       } else if (tag === 'ul' || tag === 'ol') {
         currentCard.body += node.outerHTML;
