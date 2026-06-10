@@ -1,10 +1,13 @@
 /* ─── Highlights (Support Cards) ────────────────────────────── */
+/* Basado en .content-box del diseño original de Bankinter */
+
 .highlights-container .highlights-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 24px;
 }
 
+/* ─── Cuadrícula: 3 columnas ──── */
 .highlights-list {
   list-style: none;
   margin: 0;
@@ -18,40 +21,37 @@
 .highlights-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--background-color, #fff);
+  background-color: #fff;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
-  transition: box-shadow 0.2s ease;
+  padding: 24px;
+  padding-top: 0;
 }
 
-.highlights-card:hover {
-  box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
-}
-
-/* Bloque de color superior (acento) */
+/* ─── Cuadro de icono (acento) ──── */
+/* Pequeño cuadrado 80×80px que replica el icono del original */
 .highlights-card-accent {
-  height: 64px;
+  width: 80px;
+  height: 80px;
   flex-shrink: 0;
+  margin-top: 24px;
+  margin-bottom: 16px;
 }
 
-.highlights-card--yellow .highlights-card-accent {
+.highlights-card-yellow .highlights-card-accent {
   background-color: #fed430;
 }
 
-.highlights-card--cyan .highlights-card-accent {
+.highlights-card-cyan .highlights-card-accent {
   background-color: #b5f0ef;
 }
 
-/* ─── Cuerpo de la tarjeta ──── */
+/* ─── Cuerpo: título y descripción ──── */
 .highlights-card-body {
   flex: 1;
-  padding: 24px 24px 16px;
 }
 
 .highlights-card-title {
-  font-size: var(--heading-font-size-xs, 18px);
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-color, #131313);
   margin: 0 0 12px;
@@ -59,46 +59,55 @@
 }
 
 .highlights-card-desc {
-  font-size: var(--body-font-size-xs, 14px);
-  color: var(--dark-color, #505050);
+  font-size: 0.875rem;
+  color: #505050;
   margin: 0;
   line-height: 1.6;
 }
 
-/* ─── Footer (CTA) ──── */
+/* ─── Separador de color (entre descripción y CTA) ──── */
+.highlights-card-sep {
+  height: 2px;
+  width: 32px;
+  margin: 20px 0 16px;
+  flex-shrink: 0;
+}
+
+.highlights-card-yellow .highlights-card-sep {
+  background-color: #fed430;
+}
+
+.highlights-card-cyan .highlights-card-sep {
+  background-color: #b5f0ef;
+}
+
+/* ─── Footer: CTA link ──── */
 .highlights-card-footer {
-  padding: 0 24px 24px;
   margin-top: auto;
 }
 
+/* CTA extraído de .text-link del CSS original:
+   color:#bd4313; text-transform:uppercase; letter-spacing:1px; font-size:.75rem */
 .highlights-card-link {
+  color: #bd4313;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--body-font-size-xs, 14px);
-  font-weight: 600;
-  color: var(--link-color, #131313);
-  text-decoration: none;
-  border-bottom: 2px solid currentcolor;
-  padding-bottom: 2px;
-  transition: opacity 0.2s ease;
-}
-
-.highlights-card--yellow .highlights-card-link {
-  color: #333;
-}
-
-.highlights-card--cyan .highlights-card-link {
-  color: #333;
-}
-
-.highlights-card-link:hover {
-  opacity: 0.75;
+  line-height: 24px;
 }
 
 .highlights-card-link::after {
-  content: '→';
-  font-size: 1em;
+  content: '\2192';
+  font-size: 0.9rem;
+}
+
+.highlights-card-link:hover {
+  text-decoration: underline;
 }
 
 /* ─── Responsive ──── */
