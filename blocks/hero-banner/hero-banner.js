@@ -14,19 +14,34 @@ export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
   if (!rows.length) return;
 
-  let imageUrl = '';
+  let imageContent = null; // <picture> o <img> ya construido por AEM
   let contentRow = null;
 
   if (rows.length >= 2) {
-    // Row 0: AEM convierte la URL plana en <a href="url"> — extraer href
     const [firstRow, secondRow] = rows;
     const firstCell = firstRow.querySelector(':scope > div');
+
+    // AEM EDS sirve imágenes DAM como <picture> en la primera celda
+    const picture = firstCell?.querySelector('picture');
     const link = firstCell?.querySelector('a');
     const text = firstCell?.textContent?.trim();
-    if (link?.href) {
-      imageUrl = link.href;
+
+    if (picture) {
+      // Imagen DAM: usar el <picture> tal cual (srcset optimizado automático)
+      imageContent = picture;
+    } else if (link?.href) {
+      // Compatibilidad: imageUrl almacenado como texto → construir <img>
+      const img = document.createElement('img');
+      img.src = link.href;
+      img.alt = '';
+      img.loading = 'lazy';
+      imageContent = img;
     } else if (text && (text.startsWith('http') || text.startsWith('/'))) {
-      imageUrl = text;
+      const img = document.createElement('img');
+      img.src = text;
+      img.alt = '';
+      img.loading = 'lazy';
+      imageContent = img;
     }
     contentRow = secondRow;
   } else {
@@ -36,12 +51,8 @@ export default function decorate(block) {
   const imageWrapper = document.createElement('div');
   imageWrapper.className = 'hero-banner-image';
 
-  if (imageUrl) {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.alt = block.querySelector('h1, h2')?.textContent?.trim() || 'Bankinter';
-    img.loading = 'lazy';
-    imageWrapper.append(img);
+  if (imageContent) {
+    imageWrapper.append(imageContent);
   }
 
   const textWrapper = document.createElement('div');
@@ -57,7 +68,7 @@ export default function decorate(block) {
   block.innerHTML = '';
   const inner = document.createElement('div');
   inner.className = 'hero-banner-inner';
-  if (imageUrl) inner.append(imageWrapper);
+  if (imageContent) inner.append(imageWrapper);
   inner.append(textWrapper);
   block.append(inner);
 }
