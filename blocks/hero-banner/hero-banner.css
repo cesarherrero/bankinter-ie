@@ -1,29 +1,138 @@
 /**
- * hero-banner.css — Estilos del bloque hero-banner
- * Mobile-first. BEM para nomenclatura de clases.
- * Variables CSS de :root (definidas en styles/styles.css).
- *
- * Generado por SA-D02 del Sprint 2 — Red Agéntica AEM
+ * hero-banner.css — Bloque hero-banner para Bankinter IE
+ * Replica la estructura content-block del portal original:
+ *  - Columna imagen (4/12) + columna texto (8/12)
+ *  - Variantes de color por page type (data-variant)
+ * Mobile-first. Sin preprocesadores.
  */
 
-/* ── Contenedor principal ── */
+:root {
+  --bk-yellow: #FFD700;
+  --bk-yellow-bg: #FFFBEA;
+  --bk-cyan: #1f96db;
+  --bk-cyan-bg: #EAF5FB;
+  --bk-orange: #ff821c;
+  --bk-orange-bg: #FFF4EC;
+}
+
+/* ── Contenedor hero ── */
 .hero-banner {
-  display: block;
   width: 100%;
-  max-width: var(--max-width, 1200px);
+  padding: 2.5rem 0 4rem;
+  background-color: var(--bk-yellow-bg);
+  border-bottom: 4px solid var(--bk-yellow);
+}
+
+/* Variantes de color (se aplica via clase en section o JS) */
+.hero-banner.cyan { background-color: var(--bk-cyan-bg); border-color: var(--bk-cyan); }
+.hero-banner.orange { background-color: var(--bk-orange-bg); border-color: var(--bk-orange); }
+
+.hero-banner > div {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-m, 1rem);
-  color: var(--color-text, #333333);
-  font-family: var(--font-body, sans-serif);
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
 }
 
-/* ── Estado de inicialización ── */
-.hero-banner--initialized {
-  animation: none;
+/* ── Imagen ── */
+.hero-banner .hero-banner__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-/* ── Elementos internos (BEM) ── */
-.hero-banner__item {
-  padding: var(--spacing-s, 0.5rem);
+.hero-banner .hero-banner__image img {
+  width: 100%;
+  height: auto;
+  max-width: 420px;
+  border-radius: 8px;
+  display: block;
+  object-fit: cover;
 }
 
+/* Placeholder si no hay imagen */
+.hero-banner .hero-banner__image-placeholder {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, var(--bk-yellow) 0%, #fff3b0 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-banner.cyan .hero-banner__image-placeholder {
+  background: linear-gradient(135deg, var(--bk-cyan) 0%, #b0dcf5 100%);
+}
+
+/* ── Texto ── */
+.hero-banner .hero-banner__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-banner .hero-banner__text h1,
+.hero-banner .hero-banner__text h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #191b1c;
+  margin: 0 0 0.75rem;
+}
+
+.hero-banner .hero-banner__text p {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #333;
+  margin: 0 0 0.75rem;
+}
+
+.hero-banner .hero-banner__text ul {
+  padding-left: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.hero-banner .hero-banner__text li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.hero-banner .hero-banner__text a.btn,
+.hero-banner .hero-banner__text a[class*="btn"] {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--bk-orange);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.hero-banner .hero-banner__text a.btn:hover {
+  opacity: 0.85;
+}
+
+/* ── Desktop layout: 2 columnas ── */
+@media (min-width: 768px) {
+  .hero-banner > div {
+    grid-template-columns: 5fr 8fr;
+    gap: 3rem;
+  }
+
+  .hero-banner .hero-banner__text h1,
+  .hero-banner .hero-banner__text h2 {
+    font-size: 2.5rem;
+  }
+}
