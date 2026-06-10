@@ -1,23 +1,13 @@
 /**
  * hero-banner.css — Bloque AEM EDS: HeroBanner para Bankinter IE
- * Nomenclatura kebab-case (sin BEM __) para cumplir stylelint-config-standard
+ * Fiel al diseño de www.bankinter.ie: fondo blanco, rectángulo decorativo
+ * detrás de la imagen, checkmarks naranjos, "Avant Money" en naranja.
  */
 
 .hero-banner {
   width: 100%;
   padding: 2.5rem 0 4rem;
-  background-color: #fffbea;
-  border-bottom: 4px solid #ffd700;
-}
-
-.hero-banner.cyan {
-  background-color: #eaf5fb;
-  border-color: #1f96db;
-}
-
-.hero-banner.orange {
-  background-color: #fff4ec;
-  border-color: #ff821c;
+  background-color: #fff;
 }
 
 .hero-banner-inner {
@@ -30,21 +20,45 @@
   align-items: center;
 }
 
+/* ── Imagen con rectángulo decorativo de color detrás ── */
 .hero-banner-image {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-banner-image img,
-.hero-banner-image picture img {
-  width: 100%;
-  height: auto;
-  max-width: 420px;
-  border-radius: 8px;
-  object-fit: cover;
+.hero-banner-image::after {
+  content: '';
+  position: absolute;
+  background: #ffd700;
+  width: 78%;
+  height: 72%;
+  bottom: -14px;
+  right: -14px;
+  z-index: 0;
 }
 
+.hero-banner.cyan .hero-banner-image::after {
+  background: #1f96db;
+  width: 52%;
+  height: 46%;
+  bottom: -20px;
+  right: -20px;
+}
+
+.hero-banner-image img,
+.hero-banner-image picture img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  max-width: 460px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Texto ── */
 .hero-banner-text h1,
 .hero-banner-text h2 {
   font-size: 2rem;
@@ -61,27 +75,59 @@
   margin: 0 0 1rem;
 }
 
+/* "Avant Money" — primer <strong> dentro de un <p> va en naranja */
+.hero-banner-text p strong {
+  color: #ff821c;
+  font-weight: 700;
+}
+
+/* ── Bullets como checkmarks naranjos ── */
 .hero-banner-text ul {
-  padding-left: 1.2rem;
+  list-style: none;
+  padding-left: 0;
   margin: 0 0 1.5rem;
 }
 
 .hero-banner-text li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.6;
   color: #444;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
 }
 
+.hero-banner-text li::before {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: 0.15rem;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10.5' stroke='%23ff821c' stroke-width='2'/%3E%3Cpath d='M7.5 12.5l3 3 6-6' stroke='%23ff821c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* <strong> dentro de <li> es bold negro, no naranja */
+.hero-banner-text li strong {
+  color: #191b1c;
+  font-weight: 700;
+}
+
+/* ── Botón CTA ── */
 .hero-banner-text a {
   display: inline-block;
   background: #ff821c;
   color: #fff;
   text-decoration: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 2rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   transition: background 0.2s;
 }
 
@@ -93,6 +139,15 @@
   .hero-banner-inner {
     grid-template-columns: 5fr 8fr;
     gap: 3rem;
+  }
+
+  /* Save-and-invest (cyan): texto a la IZQUIERDA, imagen a la DERECHA */
+  .hero-banner.cyan .hero-banner-image {
+    order: 2;
+  }
+
+  .hero-banner.cyan .hero-banner-text {
+    order: 1;
   }
 
   .hero-banner-text h1,
