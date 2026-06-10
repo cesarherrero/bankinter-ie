@@ -1,19 +1,26 @@
 /**
- * hero-banner.css — Bloque hero-banner para Bankinter IE
- * Estructura EDS: .hero-banner > .hero-banner__inner > (.hero-banner__image + .hero-banner__text)
+ * hero-banner.css — Bloque AEM EDS: HeroBanner para Bankinter IE
+ * Nomenclatura kebab-case (sin BEM __) para cumplir stylelint-config-standard
  */
 
 .hero-banner {
   width: 100%;
   padding: 2.5rem 0 4rem;
-  background-color: #FFFBEA;
-  border-bottom: 4px solid #FFD700;
+  background-color: #fffbea;
+  border-bottom: 4px solid #ffd700;
 }
 
-.hero-banner.cyan { background-color: #EAF5FB; border-color: #1f96db; }
-.hero-banner.orange { background-color: #FFF4EC; border-color: #ff821c; }
+.hero-banner.cyan {
+  background-color: #eaf5fb;
+  border-color: #1f96db;
+}
 
-.hero-banner__inner {
+.hero-banner.orange {
+  background-color: #fff4ec;
+  border-color: #ff821c;
+}
+
+.hero-banner-inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -23,87 +30,73 @@
   align-items: center;
 }
 
-/* ── Imagen ── */
-.hero-banner__image {
+.hero-banner-image {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-banner__image img,
-.hero-banner__image picture img {
+.hero-banner-image img,
+.hero-banner-image picture img {
   width: 100%;
   height: auto;
   max-width: 420px;
   border-radius: 8px;
-  display: block;
   object-fit: cover;
 }
 
-/* ── Texto ── */
-.hero-banner__text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.hero-banner__text h1,
-.hero-banner__text h2,
-.hero-banner__text h3 {
+.hero-banner-text h1,
+.hero-banner-text h2 {
   font-size: 2rem;
   font-weight: 700;
-  line-height: 1.2;
   color: #191b1c;
-  margin: 0 0 0.5rem;
-}
-
-.hero-banner__text p {
-  font-size: 1rem;
-  line-height: 1.65;
-  color: #333;
-  margin: 0 0 0.75rem;
-}
-
-.hero-banner__text ul {
-  padding-left: 1.25rem;
+  line-height: 1.2;
   margin: 0 0 1rem;
 }
 
-.hero-banner__text li {
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-  color: #333;
+.hero-banner-text p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #444;
+  margin: 0 0 1rem;
 }
 
-.hero-banner__text a:not(.btn) {
-  color: #1f96db;
+.hero-banner-text ul {
+  padding-left: 1.2rem;
+  margin: 0 0 1.5rem;
 }
 
-.hero-banner__text a.btn,
-.hero-banner__text a[href][class*="btn"] {
+.hero-banner-text li {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #444;
+  margin-bottom: 0.4rem;
+}
+
+.hero-banner-text a {
   display: inline-block;
-  margin-top: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #ff821c;
+  background: #ff821c;
   color: #fff;
   text-decoration: none;
+  padding: 0.7rem 1.5rem;
   border-radius: 4px;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
 }
 
-.hero-banner__text a.btn:hover { opacity: 0.85; }
+.hero-banner-text a:hover {
+  background: #d96800;
+}
 
-/* ── Desktop: 2 columnas ── */
-@media (min-width: 768px) {
-  .hero-banner__inner {
+@media (width >= 768px) {
+  .hero-banner-inner {
     grid-template-columns: 5fr 8fr;
     gap: 3rem;
   }
 
-  .hero-banner__text h1,
-  .hero-banner__text h2 {
+  .hero-banner-text h1,
+  .hero-banner-text h2 {
     font-size: 2.5rem;
   }
 }
