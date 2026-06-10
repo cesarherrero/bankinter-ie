@@ -1,9 +1,7 @@
 /**
  * highlights.css — Bloque AEM EDS: Highlights (tarjetas de producto)
- * Replica la estructura content-box del portal original de Bankinter IE:
- *   - Grid de 3 columnas en desktop, 1 en mobile
- *   - Cada tarjeta: border superior de color + icono + título + descripción + CTA
- * Mobile-first. Variables CSS de :root.
+ * Nomenclatura kebab-case para cumplir stylelint-config-standard
+ * Grid 3 columnas desktop, tarjetas con borde superior de color
  */
 
 .highlights {
@@ -17,20 +15,19 @@
   margin: 0 auto;
 }
 
-/* ── Sección heading antes de las tarjetas ── */
-.highlights .highlights__section-heading {
+.highlights-section-heading {
   text-align: center;
   margin-bottom: 2.5rem;
 }
 
-.highlights .highlights__section-heading h2 {
+.highlights-section-heading h2 {
   font-size: 1.8rem;
   font-weight: 700;
   color: #191b1c;
   margin: 0 0 0.5rem;
 }
 
-.highlights .highlights__section-heading::after {
+.highlights-section-heading::after {
   content: '';
   display: block;
   width: 60px;
@@ -39,19 +36,17 @@
   margin: 0.75rem auto 0;
 }
 
-/* ── Grid de tarjetas ── */
-.highlights .highlights__grid {
+.highlights-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
-/* ── Tarjeta individual ── */
-.highlights .highlights__card {
+.highlights-card {
   background: #fff;
   border-radius: 8px;
-  border-top: 4px solid #FFD700;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #ffd700;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -59,18 +54,24 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.highlights .highlights__card:hover {
+.highlights-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 12%);
 }
 
-/* Variantes de color para el borde superior */
-.highlights .highlights__card.card--yellow { border-top-color: #FFD700; }
-.highlights .highlights__card.card--cyan   { border-top-color: #1f96db; }
-.highlights .highlights__card.card--orange { border-top-color: #ff821c; }
+.highlights-card-yellow {
+  border-top-color: #ffd700;
+}
 
-/* ── Icono del card ── */
-.highlights .highlights__card-icon {
+.highlights-card-cyan {
+  border-top-color: #1f96db;
+}
+
+.highlights-card-orange {
+  border-top-color: #ff821c;
+}
+
+.highlights-card-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -81,12 +82,19 @@
   font-size: 1.5rem;
 }
 
-.highlights .highlights__card.card--yellow .highlights__card-icon { background: #FFFBEA; }
-.highlights .highlights__card.card--cyan   .highlights__card-icon { background: #EAF5FB; }
-.highlights .highlights__card.card--orange .highlights__card-icon { background: #FFF4EC; }
+.highlights-card-yellow .highlights-card-icon {
+  background: #fffbea;
+}
 
-/* ── Título del card ── */
-.highlights .highlights__card h3 {
+.highlights-card-cyan .highlights-card-icon {
+  background: #eaf5fb;
+}
+
+.highlights-card-orange .highlights-card-icon {
+  background: #fff4ec;
+}
+
+.highlights-card h3 {
   font-size: 1.15rem;
   font-weight: 700;
   color: #191b1c;
@@ -94,31 +102,29 @@
   line-height: 1.3;
 }
 
-/* ── Descripción del card ── */
-.highlights .highlights__card-desc {
+.highlights-card-desc {
   font-size: 0.9rem;
   line-height: 1.6;
   color: #555;
   flex: 1;
 }
 
-.highlights .highlights__card-desc ul {
+.highlights-card-desc ul {
   padding-left: 1.1rem;
   margin: 0;
 }
 
-.highlights .highlights__card-desc li {
+.highlights-card-desc li {
   margin-bottom: 0.4rem;
 }
 
-/* ── CTA link del card ── */
-.highlights .highlights__card-cta {
+.highlights-card-cta {
   margin-top: auto;
   padding-top: 0.75rem;
   border-top: 1px solid #e9e9e9;
 }
 
-.highlights .highlights__card-cta a {
+.highlights-card-cta a {
   color: #1f96db;
   text-decoration: none;
   font-weight: 600;
@@ -128,24 +134,23 @@
   gap: 0.4rem;
 }
 
-.highlights .highlights__card-cta a::after {
+.highlights-card-cta a::after {
   content: '→';
   font-size: 1rem;
 }
 
-.highlights .highlights__card-cta a:hover {
+.highlights-card-cta a:hover {
   text-decoration: underline;
   color: #1270aa;
 }
 
-/* ── Desktop: 3 columnas ── */
-@media (min-width: 768px) {
-  .highlights .highlights__grid {
+@media (width >= 768px) {
+  .highlights-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
   }
 
-  .highlights .highlights__section-heading h2 {
+  .highlights-section-heading h2 {
     font-size: 2rem;
   }
 }
