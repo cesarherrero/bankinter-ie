@@ -1,91 +1,103 @@
 /**
- * highlights.js — Bloque AEM EDS: Highlights
- * Transforma el contenido de la sección de productos en un grid de tarjetas.
- * 
- * Estructura esperada del bloque (opciones):
- *   A) Cada fila del bloque = una tarjeta (title | desc | ctaURL|ctaText)
- *   B) Contenido como rich-text con h2 (section heading) + h3/p/p grupos (tarjetas)
- *
- * El bloque detecta automáticamente cuál de las dos estructuras usar.
+ * highlights.js — Bloque AEM EDS: Highlights (tarjetas de producto)
+ * Maneja dos estructuras de entrada:
+ *   A) EDS block format: rows con columnas (div > div > div)
+ *      - Row 1: 1 columna con h2 (section heading)
+ *      - Row 2: N columnas (una por tarjeta)
+ *   B) Rich-text format: h2 + h3/p/p grupos en un solo contenedor
  */
 
 const CARD_COLORS = ['yellow', 'cyan', 'orange', 'yellow', 'cyan', 'orange'];
 
 export default function decorate(block) {
   if (!block) return;
-
   block.classList.add('highlights--initialized');
+
   const rows = [...block.querySelectorAll(':scope > div')];
   if (!rows.length) return;
 
-  // ── Caso A: múltiples filas = una tarjeta por fila ──
-  // Cada fila tiene dos o más celdas: [título, descripción, (cta)]
-  const firstRowCells = rows[0].querySelectorAll(':scope > div');
-  const isTableFormat = rows.length > 1 && firstRowCells.length >= 2 && !firstRowCells[0].querySelector('h2');
+  // Detectar si es EDS block format (alguna fila tiene múltiples columnas)
+  const hasMultiColRow = rows.some(r => r.querySelectorAll(':scope > div').length > 1);
 
-  if (isTableFormat) {
-    buildCardsFromRows(block, rows);
+  if (hasMultiColRow) {
+    buildFromEdsStructure(block, rows);
   } else {
-    // ── Caso B: rich-text con h2 + h3/p grupos ──
+    // Rich-text format: unir todo el HTML y parsear h2/h3 grupos
     const allContent = rows.map(r => r.innerHTML).join('');
     block.innerHTML = '';
     buildCardsFromRichText(block, allContent);
   }
 }
 
-function buildCardsFromRows(block, rows) {
+// ── Caso A: EDS block format ──────────────────────────────────
+function buildFromEdsStructure(block, rows) {
   const container = document.createElement('div');
 
-  // Buscar si la primera fila es un heading suelto (sin celdas múltiples)
-  const firstCells = rows[0].querySelectorAll(':scope > div');
-  let headingEl = null;
-  let cardRows = rows;
-
-  if (firstCells.length === 1 && firstCells[0].querySelector('h2')) {
-    headingEl = firstCells[0];
-    cardRows = rows.slice(1);
-  }
-
-  if (headingEl) {
-    const heading = document.createElement('div');
-    heading.className = 'highlights__section-heading';
-    heading.append(...headingEl.childNodes);
-    container.append(heading);
-  }
-
-  const grid = document.createElement('div');
-  grid.className = 'highlights__grid';
-
-  cardRows.forEach((row, idx) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    const card = createCard(
-      cells[0]?.innerHTML || '',
-      cells[1]?.innerHTML || '',
-      cells[2]?.textContent?.trim() || '',
-      CARD_COLORS[idx % CARD_COLORS.length]
-    );
-    grid.append(card);
+  // Fila de heading: 1 sola columna con h2
+  const headingRow = rows.find(r => {
+    const cols = r.querySelectorAll(':scope > div');
+    return cols.length === 1 && cols[0].querySelector('h2');
   });
 
-  container.append(grid);
+  if (headingRow) {
+    const sh = document.createElement('div');
+    sh.className = 'highlights__section-heading';
+    const h2 = headingRow.querySelector('h2');
+    sh.append(h2.cloneNode(true));
+    container.append(sh);
+  }
+
+  // Fila de tarjetas: N columnas
+  const cardRow = rows.find(r => r.querySelectorAll(':scope > div').length > 1);
+  if (cardRow) {
+    const grid = document.createElement('div');
+    grid.className = 'highlights__grid';
+
+    [...cardRow.querySelectorAll(':scope > div')].forEach((cell, idx) => {
+      const h3 = cell.querySelector('h3');
+      const allPs = [...cell.querySelectorAll('p')];
+      // Último <p> que contiene solo un enlace = CTA
+      const ctaP = allPs.reverse().find(p => {
+        const links = p.querySelectorAll('a');
+        return links.length === 1 && p.textContent.trim() === links[0].textContent.trim();
+      });
+      allPs.reverse(); // restaurar orden
+
+      const descParts = [...cell.children]
+        .filter(c => c !== h3 && c !== ctaP)
+        .map(c => c.outerHTML)
+        .join('');
+
+      const card = createCard(
+        h3 ? h3.innerHTML : '',
+        descParts,
+        ctaP ? ctaP.innerHTML : '',
+        CARD_COLORS[idx % CARD_COLORS.length]
+      );
+      grid.append(card);
+    });
+
+    container.append(grid);
+  }
+
+  block.innerHTML = '';
   block.append(container);
 }
 
+// ── Caso B: Rich-text con h2/h3 grupos ───────────────────────
 function buildCardsFromRichText(block, html) {
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
   const container = document.createElement('div');
 
-  // Separar h2 (heading de sección) de los h3 (tarjetas)
   const h2 = tmp.querySelector('h2');
   if (h2) {
-    const sectionHeading = document.createElement('div');
-    sectionHeading.className = 'highlights__section-heading';
-    sectionHeading.append(h2.cloneNode(true));
-    container.append(sectionHeading);
+    const sh = document.createElement('div');
+    sh.className = 'highlights__section-heading';
+    sh.append(h2.cloneNode(true));
+    container.append(sh);
   }
 
-  // Agrupar h3 con su contenido siguiente hasta el próximo h3
   const grid = document.createElement('div');
   grid.className = 'highlights__grid';
 
@@ -95,11 +107,7 @@ function buildCardsFromRichText(block, html) {
 
   while (i < children.length) {
     const el = children[i];
-
-    if (el.tagName === 'H2') {
-      i++;
-      continue;
-    }
+    if (el.tagName === 'H2') { i++; continue; }
 
     if (el.tagName === 'H3') {
       const title = el.innerHTML;
@@ -107,15 +115,14 @@ function buildCardsFromRichText(block, html) {
       let ctaHtml = '';
       i++;
 
-      // Recoger todo hasta el siguiente h3 o fin
-      while (i < children.length && children[i].tagName !== 'H3' && children[i].tagName !== 'H2') {
+      while (i < children.length && !['H2','H3'].includes(children[i].tagName)) {
         const next = children[i];
-        // El último p antes del siguiente h3 que contiene solo un enlace es el CTA
-        const isCtaP = next.tagName === 'P' && next.querySelectorAll('a').length === 1 && next.textContent.trim() === next.querySelector('a')?.textContent?.trim();
-        // Check if it's the last paragraph before next H3
-        const isLastP = i + 1 >= children.length || children[i + 1].tagName === 'H3';
+        const isLast = i + 1 >= children.length || ['H2','H3'].includes(children[i + 1]?.tagName);
+        const isCtaP = next.tagName === 'P'
+          && next.querySelectorAll('a').length === 1
+          && next.textContent.trim() === next.querySelector('a')?.textContent?.trim();
 
-        if (isCtaP && isLastP) {
+        if (isCtaP && isLast) {
           ctaHtml = next.innerHTML;
         } else {
           descParts.push(next.outerHTML);
@@ -123,13 +130,7 @@ function buildCardsFromRichText(block, html) {
         i++;
       }
 
-      const card = createCard(
-        title,
-        descParts.join(''),
-        ctaHtml,
-        CARD_COLORS[cardIdx % CARD_COLORS.length]
-      );
-      grid.append(card);
+      grid.append(createCard(title, descParts.join(''), ctaHtml, CARD_COLORS[cardIdx % CARD_COLORS.length]));
       cardIdx++;
     } else {
       i++;
@@ -140,24 +141,23 @@ function buildCardsFromRichText(block, html) {
   block.append(container);
 }
 
-function createCard(titleHtml, descHtml, ctaHtml, colorVariant) {
-  const card = document.createElement('div');
-  card.className = `highlights__card card--${colorVariant}`;
+// ── Factory de tarjeta ───────────────────────────────────────
+const ICONS = { yellow: '💳', cyan: '💰', orange: '🏠', default: '✦' };
 
-  // Icono decorativo
+function createCard(titleHtml, descHtml, ctaHtml, color) {
+  const card = document.createElement('div');
+  card.className = `highlights__card card--${color}`;
+
   const icon = document.createElement('div');
   icon.className = 'highlights__card-icon';
   icon.setAttribute('aria-hidden', 'true');
-  const icons = { yellow: '💳', cyan: '💰', orange: '🏠' };
-  icon.textContent = icons[colorVariant] || '✦';
+  icon.textContent = ICONS[color] || ICONS.default;
   card.append(icon);
 
-  // Título
-  const heading = document.createElement('h3');
-  heading.innerHTML = titleHtml;
-  card.append(heading);
+  const h3 = document.createElement('h3');
+  h3.innerHTML = titleHtml;
+  card.append(h3);
 
-  // Descripción
   if (descHtml) {
     const desc = document.createElement('div');
     desc.className = 'highlights__card-desc';
@@ -165,14 +165,12 @@ function createCard(titleHtml, descHtml, ctaHtml, colorVariant) {
     card.append(desc);
   }
 
-  // CTA
   if (ctaHtml) {
     const cta = document.createElement('div');
     cta.className = 'highlights__card-cta';
     cta.innerHTML = ctaHtml;
-    // Asegurar que el enlace tiene target="_blank" si es externo
     const link = cta.querySelector('a');
-    if (link && link.href && !link.href.includes(window.location.hostname)) {
+    if (link?.href && !link.href.includes(window?.location?.hostname)) {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
     }
