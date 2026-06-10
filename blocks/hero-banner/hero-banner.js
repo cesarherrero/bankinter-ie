@@ -1,47 +1,76 @@
 /**
- * hero-banner.js — Bloque AEM EDS: HeroBanner
- * Maneja la estructura EDS block (div > div > div):
- *   - Si hay 2 columnas en la primera fila: imagen + texto (layout side-by-side)
- *   - Si hay 1 columna: texto centrado con color de fondo
+ * hero-banner.js — Bloque AEM EDS: HeroBanner para Bankinter IE
+ * Estructura EDS que llega del Franklin delivery:
+ *   Row 0: imageUrl (texto plano con la URL)
+ *   Row 1: text (richtext con h1/h2 + p + ul)
  * 
- * El color de fondo se detecta por URL (cyan para save-and-invest, yellow por defecto).
+ * El JS crea la imagen a partir de la URL y construye layout 2 columnas.
+ * Variante de color (yellow/cyan/orange) se detecta por URL de la página.
  */
 export default function decorate(block) {
   if (!block) return;
 
-  // Color variant por URL
+  // Color variant por URL de la página
   const url = window.location.pathname;
-  let variant = 'yellow';
-  if (url.includes('save-and-invest')) variant = 'cyan';
+  const variant = url.includes('save-and-invest') ? 'cyan' : 'yellow';
   block.classList.add(variant, 'hero-banner--initialized');
 
   const rows = [...block.querySelectorAll(':scope > div')];
   if (!rows.length) return;
 
-  // EDS convierte la tabla en filas de divs. Primera fila es el contenido.
-  const firstRow = rows[0];
-  const cols = [...firstRow.querySelectorAll(':scope > div')];
+  // EDS block: cada campo del modelo = un row
+  // Row 0: imageUrl (text field) — contiene la URL como texto plano
+  // Row 1: text (richtext field) — contiene heading + body
 
-  if (cols.length >= 2) {
-    // Layout 2 columnas: imagen + texto
-    const imgCol = cols.find(c => c.querySelector('img, picture')) || cols[0];
-    const textCol = cols.find(c => c !== imgCol) || cols[1];
+  let imageUrl = '';
+  let contentRow = null;
 
-    imgCol.className = 'hero-banner__image';
-    textCol.className = 'hero-banner__text';
-
-    // Añadir accesibilidad al heading
-    const heading = textCol.querySelector('h1, h2, h3');
-    if (heading && !heading.id) heading.id = 'hero-main-heading';
-
-  } else if (cols.length === 1) {
-    // Layout texto solo
-    cols[0].className = 'hero-banner__text';
-    const heading = cols[0].querySelector('h1, h2, h3');
-    if (heading && !heading.id) heading.id = 'hero-main-heading';
+  if (rows.length >= 2) {
+    // Primer row: URL de imagen (texto plano)
+    const firstCell = rows[0].querySelector(':scope > div');
+    const candidateUrl = firstCell?.textContent?.trim() || '';
+    if (candidateUrl && (candidateUrl.startsWith('http') || candidateUrl.startsWith('/'))) {
+      imageUrl = candidateUrl;
+    }
+    contentRow = rows[1];
+  } else {
+    // Solo un row: todo es contenido (sin imagen)
+    contentRow = rows[0];
   }
 
-  // El primer row ya es el wrapper de la primera div del bloque
-  // Asegurarse de que tenga la clase correcta de contenedor interno
-  firstRow.className = 'hero-banner__inner';
+  // Construir la imagen
+  const imageWrapper = document.createElement('div');
+  imageWrapper.className = 'hero-banner__image';
+
+  if (imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = block.querySelector('h1, h2')?.textContent?.trim() || 'Bankinter';
+    img.loading = 'lazy';
+    imageWrapper.append(img);
+  } else {
+    // Placeholder decorativo
+    const placeholder = document.createElement('div');
+    placeholder.className = 'hero-banner__image-placeholder';
+    imageWrapper.append(placeholder);
+  }
+
+  // Construir el wrapper de texto
+  const textWrapper = document.createElement('div');
+  textWrapper.className = 'hero-banner__text';
+  if (contentRow) {
+    const cell = contentRow.querySelector(':scope > div');
+    if (cell) textWrapper.append(...cell.childNodes);
+  }
+
+  // Accesibilidad
+  const heading = textWrapper.querySelector('h1, h2');
+  if (heading && !heading.id) heading.id = 'hero-main-heading';
+
+  // Reconstruir el bloque
+  block.innerHTML = '';
+  const inner = document.createElement('div');
+  inner.className = 'hero-banner__inner';
+  inner.append(imageWrapper, textWrapper);
+  block.append(inner);
 }
