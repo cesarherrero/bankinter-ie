@@ -1,0 +1,91 @@
+/* ─── Hero Banner ────────────────────────────────────────────── */
+.hero-banner-container .hero-banner-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.hero-banner {
+  background-color: var(--light-color, #f8f8f8);
+}
+
+.hero-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+/* ─── Texto (lado izquierdo) ──── */
+.hero-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-banner-text h1 {
+  font-size: var(--heading-font-size-xl, 36px);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-color, #131313);
+  margin: 0 0 16px;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.hero-banner-text p {
+  font-size: var(--body-font-size-s, 18px);
+  color: var(--dark-color, #505050);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 440px;
+}
+
+/* ─── Imagen (lado derecho) ──── */
+.hero-banner-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.hero-banner-image picture {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hero-banner-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* ─── Responsive ──── */
+@media (width <= 767px) {
+  .hero-banner-inner {
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px 16px;
+  }
+
+  .hero-banner-image {
+    order: -1;
+    width: 100%;
+  }
+
+  .hero-banner-text p {
+    max-width: unset;
+  }
+}
+
+@media (width >= 768px) and (width <= 1024px) {
+  .hero-banner-inner {
+    padding: 40px 24px;
+    gap: 32px;
+  }
+}
