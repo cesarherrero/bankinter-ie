@@ -27,8 +27,7 @@
   padding-top: 0;
 }
 
-/* ─── Cuadro de icono (acento) ──── */
-/* Pequeño cuadrado 80×80px que replica el icono del original */
+/* ─── Cuadro de icono (acento) 80×80px ──── */
 .highlights-card-accent {
   width: 80px;
   height: 80px;
@@ -86,9 +85,10 @@
   margin-top: auto;
 }
 
-/* CTA extraído de .text-link del CSS original:
-   color:#bd4313; text-transform:uppercase; letter-spacing:1px; font-size:.75rem */
-.highlights-card-link {
+/* CTA extraído de .text-link original: color:#bd4313; uppercase; letter-spacing:1px
+   Usamos .highlights-list como prefijo para superar la especificidad de a:any-link global */
+.highlights-list .highlights-card-link,
+.highlights-list .highlights-card-link:any-link {
   color: #bd4313;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -106,7 +106,7 @@
   font-size: 0.9rem;
 }
 
-.highlights-card-link:hover {
+.highlights-list .highlights-card-link:hover {
   text-decoration: underline;
 }
 
