@@ -1,181 +1,104 @@
 /**
- * highlights.js — Bloque AEM EDS: Highlights (tarjetas de producto)
- * Maneja dos estructuras de entrada:
- *   A) EDS block format: rows con columnas (div > div > div)
- *      - Row 1: 1 columna con h2 (section heading)
- *      - Row 2: N columnas (una por tarjeta)
- *   B) Rich-text format: h2 + h3/p/p grupos en un solo contenedor
+ * highlights.js — Bloque AEM EDS: Product Highlights para Bankinter IE
+ * 
+ * Estructura del bloque que llega de Franklin delivery:
+ *   Row 0 > div: richtext con h2 (título de sección) + grupos h3/p/p
+ * 
+ * El JS parsea ese richtext y construye una grid de tarjetas.
+ * Cada h3 + p/p siguientes = una tarjeta.
  */
-
-const CARD_COLORS = ['yellow', 'cyan', 'orange', 'yellow', 'cyan', 'orange'];
-
 export default function decorate(block) {
   if (!block) return;
-  block.classList.add('highlights--initialized');
 
-  const rows = [...block.querySelectorAll(':scope > div')];
-  if (!rows.length) return;
+  // Obtener el contenido: primer (y único) row > primera celda
+  const firstCell = block.querySelector(':scope > div > div');
+  if (!firstCell) return;
 
-  // Detectar si es EDS block format (alguna fila tiene múltiples columnas)
-  const hasMultiColRow = rows.some(r => r.querySelectorAll(':scope > div').length > 1);
+  const html = firstCell.innerHTML;
 
-  if (hasMultiColRow) {
-    buildFromEdsStructure(block, rows);
-  } else {
-    // Rich-text format: unir todo el HTML y parsear h2/h3 grupos
-    const allContent = rows.map(r => r.innerHTML).join('');
-    block.innerHTML = '';
-    buildCardsFromRichText(block, allContent);
+  // Parsear: h2 es el título de la sección, cada h3 empieza una tarjeta
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html');
+  const container = doc.querySelector('div');
+  const nodes = [...container.childNodes];
+
+  let sectionTitle = '';
+  const cards = [];
+  let currentCard = null;
+
+  const ICONS = ['💳', '🏦', '🏠', '⭐', '💡', '📈', '🌿'];
+  const COLORS = ['yellow', 'cyan', 'orange', 'yellow', 'cyan', 'orange', 'yellow'];
+
+  for (const node of nodes) {
+    const tag = node.nodeName?.toLowerCase();
+    if (!tag || tag === '#text') continue;
+
+    if (tag === 'h2') {
+      sectionTitle = node.textContent.trim();
+    } else if (tag === 'h3') {
+      if (currentCard) cards.push(currentCard);
+      currentCard = { heading: node.textContent.trim(), body: '', link: '', linkText: '' };
+    } else if (currentCard) {
+      if (tag === 'p') {
+        const a = node.querySelector('a');
+        if (a) {
+          currentCard.link = a.href;
+          currentCard.linkText = a.textContent.trim();
+        } else {
+          const pText = node.innerHTML;
+          currentCard.body += (currentCard.body ? '<br>' : '') + pText;
+        }
+      } else if (tag === 'ul') {
+        currentCard.body += node.outerHTML;
+      }
+    }
   }
-}
+  if (currentCard) cards.push(currentCard);
 
-// ── Caso A: EDS block format ──────────────────────────────────
-function buildFromEdsStructure(block, rows) {
-  const container = document.createElement('div');
-
-  // Fila de heading: 1 sola columna con h2
-  const headingRow = rows.find(r => {
-    const cols = r.querySelectorAll(':scope > div');
-    return cols.length === 1 && cols[0].querySelector('h2');
-  });
-
-  if (headingRow) {
-    const sh = document.createElement('div');
-    sh.className = 'highlights__section-heading';
-    const h2 = headingRow.querySelector('h2');
-    sh.append(h2.cloneNode(true));
-    container.append(sh);
-  }
-
-  // Fila de tarjetas: N columnas
-  const cardRow = rows.find(r => r.querySelectorAll(':scope > div').length > 1);
-  if (cardRow) {
-    const grid = document.createElement('div');
-    grid.className = 'highlights__grid';
-
-    [...cardRow.querySelectorAll(':scope > div')].forEach((cell, idx) => {
-      const h3 = cell.querySelector('h3');
-      const allPs = [...cell.querySelectorAll('p')];
-      // Último <p> que contiene solo un enlace = CTA
-      const ctaP = allPs.reverse().find(p => {
-        const links = p.querySelectorAll('a');
-        return links.length === 1 && p.textContent.trim() === links[0].textContent.trim();
-      });
-      allPs.reverse(); // restaurar orden
-
-      const descParts = [...cell.children]
-        .filter(c => c !== h3 && c !== ctaP)
-        .map(c => c.outerHTML)
-        .join('');
-
-      const card = createCard(
-        h3 ? h3.innerHTML : '',
-        descParts,
-        ctaP ? ctaP.innerHTML : '',
-        CARD_COLORS[idx % CARD_COLORS.length]
-      );
-      grid.append(card);
-    });
-
-    container.append(grid);
-  }
-
+  // Construir markup
   block.innerHTML = '';
-  block.append(container);
-}
 
-// ── Caso B: Rich-text con h2/h3 grupos ───────────────────────
-function buildCardsFromRichText(block, html) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  const container = document.createElement('div');
-
-  const h2 = tmp.querySelector('h2');
-  if (h2) {
-    const sh = document.createElement('div');
-    sh.className = 'highlights__section-heading';
-    sh.append(h2.cloneNode(true));
-    container.append(sh);
+  if (sectionTitle) {
+    const titleEl = document.createElement('h2');
+    titleEl.className = 'highlights__title';
+    titleEl.textContent = sectionTitle;
+    block.append(titleEl);
   }
 
   const grid = document.createElement('div');
   grid.className = 'highlights__grid';
 
-  const children = [...tmp.children];
-  let cardIdx = 0;
-  let i = 0;
+  cards.forEach((card, i) => {
+    const el = document.createElement('div');
+    const color = COLORS[i % COLORS.length];
+    el.className = `highlights__card highlights__card--${color}`;
 
-  while (i < children.length) {
-    const el = children[i];
-    if (el.tagName === 'H2') { i++; continue; }
+    const icon = document.createElement('div');
+    icon.className = 'highlights__card-icon';
+    icon.textContent = ICONS[i % ICONS.length];
 
-    if (el.tagName === 'H3') {
-      const title = el.innerHTML;
-      const descParts = [];
-      let ctaHtml = '';
-      i++;
+    const heading = document.createElement('h3');
+    heading.textContent = card.heading;
 
-      while (i < children.length && !['H2','H3'].includes(children[i].tagName)) {
-        const next = children[i];
-        const isLast = i + 1 >= children.length || ['H2','H3'].includes(children[i + 1]?.tagName);
-        const isCtaP = next.tagName === 'P'
-          && next.querySelectorAll('a').length === 1
-          && next.textContent.trim() === next.querySelector('a')?.textContent?.trim();
-
-        if (isCtaP && isLast) {
-          ctaHtml = next.innerHTML;
-        } else {
-          descParts.push(next.outerHTML);
-        }
-        i++;
-      }
-
-      grid.append(createCard(title, descParts.join(''), ctaHtml, CARD_COLORS[cardIdx % CARD_COLORS.length]));
-      cardIdx++;
-    } else {
-      i++;
-    }
-  }
-
-  container.append(grid);
-  block.append(container);
-}
-
-// ── Factory de tarjeta ───────────────────────────────────────
-const ICONS = { yellow: '💳', cyan: '💰', orange: '🏠', default: '✦' };
-
-function createCard(titleHtml, descHtml, ctaHtml, color) {
-  const card = document.createElement('div');
-  card.className = `highlights__card card--${color}`;
-
-  const icon = document.createElement('div');
-  icon.className = 'highlights__card-icon';
-  icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = ICONS[color] || ICONS.default;
-  card.append(icon);
-
-  const h3 = document.createElement('h3');
-  h3.innerHTML = titleHtml;
-  card.append(h3);
-
-  if (descHtml) {
     const desc = document.createElement('div');
     desc.className = 'highlights__card-desc';
-    desc.innerHTML = descHtml;
-    card.append(desc);
-  }
+    desc.innerHTML = card.body;
 
-  if (ctaHtml) {
-    const cta = document.createElement('div');
-    cta.className = 'highlights__card-cta';
-    cta.innerHTML = ctaHtml;
-    const link = cta.querySelector('a');
-    if (link?.href && !link.href.includes(window?.location?.hostname)) {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
+    el.append(icon, heading, desc);
+
+    if (card.link) {
+      const cta = document.createElement('div');
+      cta.className = 'highlights__card-cta';
+      const a = document.createElement('a');
+      a.href = card.link;
+      a.textContent = card.linkText || 'Learn more';
+      a.setAttribute('aria-label', card.linkText || card.heading);
+      cta.append(a);
+      el.append(cta);
     }
-    card.append(cta);
-  }
 
-  return card;
+    grid.append(el);
+  });
+
+  block.append(grid);
 }
