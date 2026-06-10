@@ -1,5 +1,8 @@
 /* ─── Highlights (Support Cards) ────────────────────────────── */
-/* Basado en .content-box del diseño original de Bankinter */
+/* Replica .content-box del diseño Bankinter:
+   - Caja de icono 96x96 con el icono SVG centrado
+   - Separador delgado en color del acento
+   - CTA text-link en color #bd4313 uppercase */
 
 .highlights-container .highlights-wrapper {
   max-width: 1200px;
@@ -17,21 +20,24 @@
   gap: 24px;
 }
 
-/* ─── Tarjeta individual ──── */
+/* ─── Tarjeta ──── */
 .highlights-card {
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e5e5e5;
   padding: 24px;
   padding-top: 0;
 }
 
-/* ─── Cuadro de icono (acento) 80×80px ──── */
+/* ─── Caja de icono (96x96px) ──── */
 .highlights-card-accent {
-  width: 80px;
-  height: 80px;
+  width: 96px;
+  height: 96px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 24px;
   margin-bottom: 16px;
 }
@@ -42,6 +48,15 @@
 
 .highlights-card-cyan .highlights-card-accent {
   background-color: #b5f0ef;
+}
+
+/* Icono SVG centrado, color oscuro para contraste sobre el fondo */
+.highlights-card-accent svg {
+  width: 40px;
+  height: 40px;
+  color: #191b1c;
+  display: block;
+  flex-shrink: 0;
 }
 
 /* ─── Cuerpo: título y descripción ──── */
@@ -64,10 +79,10 @@
   line-height: 1.6;
 }
 
-/* ─── Separador de color (entre descripción y CTA) ──── */
+/* ─── Separador: línea corta en color del acento ──── */
 .highlights-card-sep {
-  height: 2px;
-  width: 32px;
+  height: 4px;
+  width: 36px;
   margin: 20px 0 16px;
   flex-shrink: 0;
 }
@@ -80,13 +95,12 @@
   background-color: #b5f0ef;
 }
 
-/* ─── Footer: CTA link ──── */
+/* ─── Footer: CTA text-link ──── */
 .highlights-card-footer {
   margin-top: auto;
 }
 
-/* CTA extraído de .text-link original: color:#bd4313; uppercase; letter-spacing:1px
-   Usamos .highlights-list como prefijo para superar la especificidad de a:any-link global */
+/* CTA: color #bd4313, uppercase, letter-spacing 1px (.text-link del original) */
 .highlights-list .highlights-card-link,
 .highlights-list .highlights-card-link:any-link {
   color: #bd4313;
