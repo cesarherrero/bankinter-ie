@@ -14,15 +14,15 @@
   gap: 24px;
 }
 
+/* Sin border: las tarjetas son cajas blancas limpias sin borde visible */
 .highlights-card {
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  border: 1px solid #e5e5e5;
   padding: 24px;
-  padding-top: 0;
 }
 
+/* Caja de icono (96x96px) con padding uniforme en la tarjeta */
 .highlights-card-accent {
   width: 96px;
   height: 96px;
@@ -30,7 +30,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 24px;
   margin-bottom: 16px;
 }
 
@@ -42,16 +41,14 @@
   background-color: #b5f0ef;
 }
 
+/* AEM EDS global CSS sets fill:black and stroke:none — override explicito */
 .highlights-card-accent svg {
   width: 40px;
   height: 40px;
   display: block;
   flex-shrink: 0;
-  overflow: visible;
 }
 
-/* AEM EDS global CSS sets fill:black and stroke:none on SVG elements —
-   override both properties explicitly for all SVG children inside icons */
 .highlights-card-accent svg path,
 .highlights-card-accent svg circle,
 .highlights-card-accent svg line,
@@ -62,7 +59,6 @@
   stroke: rgb(25, 27, 28);
 }
 
-/* Small dot in question-mark icon: has fill=currentColor — restore it */
 .highlights-card-accent svg circle[fill='currentColor'] {
   fill: rgb(25, 27, 28);
   stroke: none;
