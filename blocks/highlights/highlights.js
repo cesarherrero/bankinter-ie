@@ -1,111 +1,115 @@
 /**
- * highlights.js — Bloque AEM EDS: Highlights (tarjetas de producto)
- *
- * CSS espera:
- *   .highlights > div > .highlights-section-heading > h2
- *   .highlights > div > .highlights-grid > .highlights-card.highlights-card-{color}
- *     > .highlights-card-icon, h3, .highlights-card-desc, .highlights-card-cta > a
+ * highlights.js — Bloque AEM EDS: Highlights
+ * Parsea contenido AEM y construye la estructura DOM esperada por highlights.css:
+ *   - Section heading (h2 + descripción)
+ *   - Grid de cards (una por cada h3): icono, título, descripción, CTA
  */
+
+const ICON_COLORS = ['yellow', 'cyan', 'orange'];
+
 export default function decorate(block) {
   if (!block) return;
 
-  const firstCell = block.querySelector(':scope > div > div');
-  if (!firstCell) return;
-
-  const { innerHTML: html } = firstCell;
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html');
-  const nodes = [...doc.querySelector('div').childNodes];
-
-  let sectionTitle = '';
-  const cards = [];
-  let currentCard = null;
-
-  const ICONS = ['💳', '🏦', '🏠', '⭐', '💡', '📈', '🌿'];
-  const COLORS = ['yellow', 'cyan', 'orange', 'yellow', 'cyan', 'orange', 'yellow'];
-
-  nodes.forEach((node) => {
-    const tag = node.nodeName?.toLowerCase();
-    if (!tag || tag === '#text') return;
-
-    if (tag === 'h2') {
-      sectionTitle = node.textContent.trim();
-    } else if (tag === 'h3') {
-      if (currentCard) cards.push(currentCard);
-      currentCard = {
-        heading: node.textContent.trim(),
-        body: '',
-        link: '',
-        linkText: '',
-      };
-    } else if (currentCard) {
-      if (tag === 'p') {
-        const links = node.querySelectorAll('a');
-        const plainText = node.textContent.trim();
-        // Solo es CTA si el <p> contiene ÚNICAMENTE un link (sin texto adicional)
-        const isCta = links.length === 1
-          && links[0].textContent.trim() === plainText
-          && !currentCard.link;
-        if (isCta) {
-          currentCard.link = links[0].href;
-          currentCard.linkText = links[0].textContent.trim();
-        } else {
-          currentCard.body += node.outerHTML;
-        }
-      } else if (tag === 'ul' || tag === 'ol') {
-        currentCard.body += node.outerHTML;
-      }
-    }
-  });
-  if (currentCard) cards.push(currentCard);
-
-  block.innerHTML = '';
-  const wrapper = document.createElement('div');
-
-  if (sectionTitle) {
-    const sectionHeading = document.createElement('div');
-    sectionHeading.className = 'highlights-section-heading';
-    const h2 = document.createElement('h2');
-    h2.textContent = sectionTitle;
-    sectionHeading.append(h2);
-    wrapper.append(sectionHeading);
+  // Obtener el nodo de contenido principal
+  const contentCell = block.querySelector(':scope > div > div');
+  if (!contentCell) {
+    block.classList.add('highlights--initialized');
+    return;
   }
 
-  const grid = document.createElement('div');
-  grid.className = 'highlights-grid';
+  const children = Array.from(contentCell.childNodes).filter(
+    n => n.nodeType === Node.ELEMENT_NODE,
+  );
+  if (children.length === 0) {
+    block.classList.add('highlights--initialized');
+    return;
+  }
 
-  cards.forEach((card, i) => {
-    const color = COLORS[i % COLORS.length];
-    const el = document.createElement('div');
-    el.className = `highlights-card highlights-card-${color}`;
+  const h3s = contentCell.querySelectorAll('h3');
 
-    const icon = document.createElement('div');
-    icon.className = 'highlights-card-icon';
-    icon.textContent = ICONS[i % ICONS.length];
+  // Si hay h3s → modo grid de cards
+  if (h3s.length > 0) {
+    block.innerHTML = '';
 
-    const heading = document.createElement('h3');
-    heading.textContent = card.heading;
-
-    const desc = document.createElement('div');
-    desc.className = 'highlights-card-desc';
-    desc.innerHTML = card.body;
-
-    el.append(icon, heading, desc);
-
-    if (card.link) {
-      const cta = document.createElement('div');
-      cta.className = 'highlights-card-cta';
-      const a = document.createElement('a');
-      a.href = card.link;
-      a.textContent = card.linkText || 'Learn more';
-      a.setAttribute('aria-label', card.linkText || card.heading);
-      cta.append(a);
-      el.append(cta);
+    // Section heading: h2 y párrafo previo al primer h3
+    const firstH3 = h3s[0];
+    const headingEls = [];
+    let node = contentCell.firstElementChild;
+    while (node && node !== firstH3) {
+      headingEls.push(node);
+      node = node.nextElementSibling;
+    }
+    if (headingEls.length > 0) {
+      const headingDiv = document.createElement('div');
+      headingDiv.className = 'highlights-section-heading';
+      headingEls.forEach(el => headingDiv.appendChild(el.cloneNode(true)));
+      block.appendChild(headingDiv);
     }
 
-    grid.append(el);
-  });
+    // Grid
+    const grid = document.createElement('div');
+    grid.className = 'highlights-grid';
 
-  wrapper.append(grid);
-  block.append(wrapper);
+    h3s.forEach((h3, idx) => {
+      const card = document.createElement('div');
+      card.className = `highlights-card highlights-card-${ICON_COLORS[idx % ICON_COLORS.length]}`;
+
+      // Icono (imagen si imageUrl disponible, sino emoji de fallback)
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'highlights-card-icon';
+      // Intentar obtener imagen del bloque (imageUrl como atributo de datos)
+      const imgEl = block.dataset?.imageUrl
+        ? (() => { const i = document.createElement('img'); i.src = block.dataset.imageUrl; i.alt = ''; return i; })()
+        : null;
+      if (imgEl) {
+        iconDiv.style.background = 'none';
+        iconDiv.style.padding = '0';
+        iconDiv.style.overflow = 'hidden';
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.objectFit = 'cover';
+        iconDiv.appendChild(imgEl);
+      } else {
+        // Emoji de tarjeta de crédito como placeholder
+        iconDiv.textContent = '💳';
+      }
+      card.appendChild(iconDiv);
+
+      // Título h3
+      card.appendChild(h3.cloneNode(true));
+
+      // Descripción y CTA: elementos tras el h3 hasta el siguiente h3
+      const descDiv = document.createElement('div');
+      descDiv.className = 'highlights-card-desc';
+      let sibling = h3.nextElementSibling;
+      const nextH3 = h3s[idx + 1] || null;
+
+      while (sibling && sibling !== nextH3) {
+        const hasLink = sibling.querySelector('a') || sibling.tagName === 'A';
+        if (hasLink) {
+          const ctaDiv = document.createElement('div');
+          ctaDiv.className = 'highlights-card-cta';
+          ctaDiv.appendChild(sibling.cloneNode(true));
+          card.appendChild(ctaDiv);
+        } else {
+          descDiv.appendChild(sibling.cloneNode(true));
+        }
+        sibling = sibling.nextElementSibling;
+      }
+      card.insertBefore(descDiv, card.querySelector('.highlights-card-cta'));
+      grid.appendChild(card);
+    });
+
+    block.appendChild(grid);
+  } else {
+    // Sin h3 → renderizado simple de texto enriquecido (section heading solo)
+    block.classList.add('highlights--simple');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'highlights-section-heading';
+    children.forEach(el => wrapper.appendChild(el.cloneNode(true)));
+    block.innerHTML = '';
+    block.appendChild(wrapper);
+  }
+
+  block.classList.add('highlights--initialized');
 }
