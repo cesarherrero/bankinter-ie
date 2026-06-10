@@ -214,5 +214,35 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "hero-banner",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title (h1)"
+      },
+      {
+        "component": "text",
+        "name": "subtitle",
+        "label": "Subtitle"
+      }
+    ]
+  },
+  {
+    "id": "highlights",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "content",
+        "label": "Cards Content (h3 + p + link)"
+      }
+    ]
   }
 ]
