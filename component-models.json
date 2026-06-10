@@ -214,5 +214,29 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "hero-banner",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Content (image + heading + body)",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "highlights",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Content (h2 section + h3/p cards)",
+        "value": ""
+      }
+    ]
   }
 ]
