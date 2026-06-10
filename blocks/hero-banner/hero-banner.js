@@ -19,7 +19,8 @@ export default function decorate(block) {
 
   if (rows.length >= 2) {
     // Row 0: AEM convierte la URL plana en <a href="url"> — extraer href
-    const firstCell = rows[0].querySelector(':scope > div');
+    const [firstRow, secondRow] = rows;
+    const firstCell = firstRow.querySelector(':scope > div');
     const link = firstCell?.querySelector('a');
     const text = firstCell?.textContent?.trim();
     if (link?.href) {
@@ -27,13 +28,13 @@ export default function decorate(block) {
     } else if (text && (text.startsWith('http') || text.startsWith('/'))) {
       imageUrl = text;
     }
-    contentRow = rows[1];
+    contentRow = secondRow;
   } else {
-    contentRow = rows[0];
+    [contentRow] = rows;
   }
 
   const imageWrapper = document.createElement('div');
-  imageWrapper.className = 'hero-banner__image';
+  imageWrapper.className = 'hero-banner-image';
 
   if (imageUrl) {
     const img = document.createElement('img');
@@ -44,7 +45,7 @@ export default function decorate(block) {
   }
 
   const textWrapper = document.createElement('div');
-  textWrapper.className = 'hero-banner__text';
+  textWrapper.className = 'hero-banner-text';
   if (contentRow) {
     const cell = contentRow.querySelector(':scope > div');
     if (cell) textWrapper.append(...cell.childNodes);
@@ -55,7 +56,7 @@ export default function decorate(block) {
 
   block.innerHTML = '';
   const inner = document.createElement('div');
-  inner.className = 'hero-banner__inner';
+  inner.className = 'hero-banner-inner';
   if (imageUrl) inner.append(imageWrapper);
   inner.append(textWrapper);
   block.append(inner);
