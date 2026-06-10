@@ -14,11 +14,13 @@
   gap: 24px;
 }
 
-/* Sin border: las tarjetas son cajas blancas limpias sin borde visible */
+/* Las tarjetas tienen borde suave + sombra de caja como en el original Bankinter */
 .highlights-card {
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
   padding: 24px;
 }
 
