@@ -1,16 +1,10 @@
 /* ─── Highlights (Support Cards) ────────────────────────────── */
-/* Replica .content-box del diseño Bankinter:
-   - Caja de icono 96x96 con el icono SVG centrado
-   - Separador delgado en color del acento
-   - CTA text-link en color #bd4313 uppercase */
-
 .highlights-container .highlights-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 24px;
 }
 
-/* ─── Cuadrícula: 3 columnas ──── */
 .highlights-list {
   list-style: none;
   margin: 0;
@@ -20,7 +14,6 @@
   gap: 24px;
 }
 
-/* ─── Tarjeta ──── */
 .highlights-card {
   display: flex;
   flex-direction: column;
@@ -30,7 +23,6 @@
   padding-top: 0;
 }
 
-/* ─── Caja de icono (96x96px) ──── */
 .highlights-card-accent {
   width: 96px;
   height: 96px;
@@ -50,8 +42,6 @@
   background-color: #b5f0ef;
 }
 
-/* Icono SVG centrado — AEM EDS global CSS sobreescribe stroke con "none".
-   Se fuerzan las propiedades stroke/fill explícitamente con alta especificidad. */
 .highlights-card-accent svg {
   width: 40px;
   height: 40px;
@@ -60,26 +50,24 @@
   overflow: visible;
 }
 
-/* Forzar stroke: currentColor en el SVG raíz y en todos sus hijos
-   para contrarrestar el reset global de AEM EDS */
-.highlights-card-accent svg,
+/* AEM EDS global CSS sets fill:black and stroke:none on SVG elements —
+   override both properties explicitly for all SVG children inside icons */
 .highlights-card-accent svg path,
 .highlights-card-accent svg circle,
 .highlights-card-accent svg line,
 .highlights-card-accent svg polyline,
 .highlights-card-accent svg rect,
 .highlights-card-accent svg ellipse {
-  color: #191b1c;
-  stroke: currentColor;
+  fill: none;
+  stroke: rgb(25, 27, 28);
 }
 
-/* El único elemento con fill explícito es el pequeño dot (fill="currentColor" stroke="none") */
-.highlights-card-accent svg circle[fill="currentColor"] {
-  fill: currentColor;
+/* Small dot in question-mark icon: has fill=currentColor — restore it */
+.highlights-card-accent svg circle[fill='currentColor'] {
+  fill: rgb(25, 27, 28);
   stroke: none;
 }
 
-/* ─── Cuerpo: título y descripción ──── */
 .highlights-card-body {
   flex: 1;
 }
@@ -99,7 +87,6 @@
   line-height: 1.6;
 }
 
-/* ─── Separador: línea corta en color del acento ──── */
 .highlights-card-sep {
   height: 4px;
   width: 36px;
@@ -115,12 +102,10 @@
   background-color: #b5f0ef;
 }
 
-/* ─── Footer: CTA text-link ──── */
 .highlights-card-footer {
   margin-top: auto;
 }
 
-/* CTA: color #bd4313, uppercase, letter-spacing (.text-link del original Bankinter) */
 .highlights-list .highlights-card-link,
 .highlights-list .highlights-card-link:any-link {
   color: #bd4313;
@@ -144,7 +129,6 @@
   text-decoration: underline;
 }
 
-/* ─── Responsive ──── */
 @media (width <= 767px) {
   .highlights-list {
     grid-template-columns: 1fr;
