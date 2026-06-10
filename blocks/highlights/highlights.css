@@ -16,7 +16,7 @@
 }
 
 .highlights-section-heading {
-  text-align: center;
+  text-align: left;
   margin-bottom: 2.5rem;
 }
 
@@ -72,26 +72,26 @@
 }
 
 .highlights-card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.25rem;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .highlights-card-yellow .highlights-card-icon {
-  background: #fffbea;
+  background: #ffd700;
 }
 
 .highlights-card-cyan .highlights-card-icon {
-  background: #eaf5fb;
+  background: #1f96db;
 }
 
 .highlights-card-orange .highlights-card-icon {
-  background: #fff4ec;
+  background: #ff821c;
 }
 
 .highlights-card h3 {
