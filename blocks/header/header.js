@@ -3,6 +3,119 @@ import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
+const FALLBACK_NAV_ITEMS = [
+  { label: 'About us', href: '/personal/about-us' },
+  { label: 'Save and Invest', href: '/personal/save-and-invest' },
+  { label: 'Our Lending Products', href: '/personal/lend' },
+  { label: 'Support', href: '/personal/support' },
+];
+const FALLBACK_TOOL_ITEMS = [
+  { label: 'Fixed term deposit accounts', href: '/personal/save-and-invest/fixed-term-deposit-account', tone: 'secondary' },
+  { label: 'Customer log in', href: '/personal/log-in', tone: 'primary' },
+];
+
+function titleizeSegment(segment) {
+  return segment.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function isBankinterNav(fragment) {
+  if (!fragment) return false;
+  const text = fragment.textContent.replace(/\s+/g, ' ').trim();
+  return text.includes('Bankinter') && !text.includes('Examples') && !text.includes('Getting Started');
+}
+
+function createSearchIcon() {
+  const wrap = document.createElement('span');
+  wrap.className = 'nav-bankinter-search-icon';
+  wrap.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16L21 21"></path></svg>';
+  return wrap;
+}
+
+function createBreadcrumb() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  if (parts.length < 2) return null;
+
+  const nav = document.createElement('nav');
+  nav.className = 'nav-bankinter-breadcrumb';
+  nav.setAttribute('aria-label', 'Breadcrumb');
+
+  const homeLink = document.createElement('a');
+  homeLink.href = '/personal/home';
+  homeLink.textContent = 'Home';
+  nav.append(homeLink);
+
+  const current = document.createElement('span');
+  current.textContent = titleizeSegment(parts[parts.length - 1]);
+  nav.append(current);
+  return nav;
+}
+
+function createHeaderFallback() {
+  const container = document.createElement('div');
+  container.className = 'nav-bankinter-fallback';
+
+  const utility = document.createElement('div');
+  utility.className = 'nav-bankinter-utility';
+
+  const utilityInner = document.createElement('div');
+  utilityInner.className = 'nav-bankinter-utility-inner';
+
+  const segment = document.createElement('span');
+  segment.className = 'nav-bankinter-segment';
+  segment.textContent = 'Personal';
+
+  const actions = document.createElement('div');
+  actions.className = 'nav-bankinter-actions';
+
+  const search = document.createElement('a');
+  search.className = 'nav-bankinter-search';
+  search.href = '/personal/search';
+  search.setAttribute('aria-label', 'Search');
+  search.append(createSearchIcon());
+  actions.append(search);
+
+  FALLBACK_TOOL_ITEMS.forEach(({ label, href, tone }) => {
+    const link = document.createElement('a');
+    link.className = `nav-bankinter-action nav-bankinter-action-${tone}`;
+    link.href = href;
+    link.textContent = label;
+    actions.append(link);
+  });
+
+  utilityInner.append(segment, actions);
+  utility.append(utilityInner);
+
+  const main = document.createElement('div');
+  main.className = 'nav-bankinter-main';
+
+  const mainInner = document.createElement('div');
+  mainInner.className = 'nav-bankinter-main-inner';
+
+  const brand = document.createElement('a');
+  brand.className = 'nav-bankinter-brand';
+  brand.href = '/personal/home';
+  brand.textContent = 'bankinter.';
+
+  const sections = document.createElement('nav');
+  sections.className = 'nav-bankinter-sections';
+  sections.setAttribute('aria-label', 'Primary navigation');
+
+  FALLBACK_NAV_ITEMS.forEach(({ label, href }) => {
+    const link = document.createElement('a');
+    link.href = href;
+    link.textContent = label;
+    if (window.location.pathname === href) link.setAttribute('aria-current', 'page');
+    sections.append(link);
+  });
+
+  mainInner.append(brand, sections);
+  main.append(mainInner);
+
+  const breadcrumb = createBreadcrumb();
+  container.append(utility, main);
+  if (breadcrumb) container.append(breadcrumb);
+  return container;
+}
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -117,6 +230,11 @@ export default async function decorate(block) {
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   const fragment = await loadFragment(navPath);
+
+  if (!isBankinterNav(fragment)) {
+    block.replaceChildren(createHeaderFallback());
+    return;
+  }
 
   // decorate nav DOM
   block.textContent = '';

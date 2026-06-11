@@ -1,20 +1,80 @@
 footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+  background-color: #e9edf3;
+  color: #303030;
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 
 footer .footer > div {
   margin: auto;
   max-width: 1200px;
-  padding: 40px 24px 24px;
+  padding: 32px 24px 28px;
 }
 
 footer .footer p {
   margin: 0;
 }
 
+.footer-fallback {
+  display: grid;
+  gap: 24px;
+}
+
+.footer-fallback-brand {
+  color: #ff6c00;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.footer-fallback-nav {
+  border-bottom: 1px solid #d8d2c8;
+  padding-bottom: 20px;
+}
+
+.footer-fallback-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.footer-fallback-links a {
+  color: #303030;
+  text-decoration: none;
+}
+
+.footer-fallback-links a:hover,
+.footer-fallback-legal a:hover {
+  text-decoration: underline;
+}
+
+.footer-fallback-legal {
+  display: grid;
+  gap: 12px;
+  color: #505050;
+}
+
+.footer-fallback-legal a {
+  color: #303030;
+}
+
+.footer-fallback-copy {
+  color: #191b1c;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @media (width >= 900px) {
   footer .footer > div {
-    padding: 40px 32px 24px;
+    padding: 40px 32px 32px;
+  }
+
+  .footer-fallback {
+    gap: 28px;
   }
 }

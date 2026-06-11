@@ -270,3 +270,230 @@ header nav .nav-sections ul > li > ul > li {
 header nav .nav-tools {
   grid-area: tools;
 }
+
+header .nav-bankinter-fallback {
+  background: #fff;
+  color: #191b1c;
+}
+
+header .nav-bankinter-utility {
+  background: #e9edf3;
+}
+
+header .nav-bankinter-utility-inner,
+header .nav-bankinter-main-inner,
+header .nav-bankinter-breadcrumb {
+  box-sizing: border-box;
+  width: min(100%, 1160px);
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+header .nav-bankinter-utility-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+}
+
+header .nav-bankinter-segment {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 18px;
+  background: #f5f1eb;
+  color: #bd4313;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+header .nav-bankinter-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+header .nav-bankinter-search,
+header .nav-bankinter-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 18px;
+  color: #191b1c;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8125rem;
+}
+
+header .nav-bankinter-search {
+  width: 40px;
+  padding: 0;
+  background: #dde4ee;
+}
+
+header .nav-bankinter-search svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.7;
+}
+
+header .nav-bankinter-action-secondary {
+  background: #b8eff2;
+}
+
+header .nav-bankinter-action-primary {
+  background: #ff8a1c;
+}
+
+header .nav-bankinter-main {
+  border-bottom: 1px solid #efebe3;
+}
+
+header .nav-bankinter-main-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 74px;
+}
+
+header .nav-bankinter-brand {
+  color: #ff6c00;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+header .nav-bankinter-sections {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+}
+
+header .nav-bankinter-sections a {
+  color: #191b1c;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+header .nav-bankinter-sections a[aria-current='page'] {
+  color: #bd4313;
+}
+
+header .nav-bankinter-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  font-size: 0.875rem;
+}
+
+header .nav-bankinter-breadcrumb a,
+header .nav-bankinter-breadcrumb span {
+  color: #191b1c;
+  text-decoration: none;
+}
+
+header .nav-bankinter-breadcrumb span {
+  color: #bd4313;
+}
+
+header .nav-bankinter-breadcrumb span::before {
+  content: '›';
+  color: #7a7a7a;
+  margin-right: 10px;
+}
+
+@media (width <= 899px) {
+  header {
+    height: auto;
+  }
+
+  header .nav-bankinter-utility-inner,
+  header .nav-bankinter-main-inner,
+  header .nav-bankinter-breadcrumb {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  header .nav-bankinter-utility-inner,
+  header .nav-bankinter-main-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  header .nav-bankinter-actions,
+  header .nav-bankinter-sections {
+    width: 100%;
+  }
+
+  header .nav-bankinter-actions {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  header .nav-bankinter-action-secondary,
+  header .nav-bankinter-action-primary {
+    justify-content: flex-start;
+    width: fit-content;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  header .nav-bankinter-action-secondary {
+    grid-column: 1 / -1;
+  }
+
+  header .nav-bankinter-action-primary {
+    grid-column: 1 / -1;
+  }
+
+  header .nav-bankinter-main-inner {
+    min-height: 54px;
+  }
+
+  header .nav-bankinter-brand {
+    font-size: 2.3rem;
+  }
+
+  header .nav-bankinter-search,
+  header .nav-bankinter-action,
+  header .nav-bankinter-segment {
+    min-height: 36px;
+    font-size: 0.72rem;
+  }
+
+  header .nav-bankinter-main {
+    border-bottom: 0;
+  }
+
+  header .nav-bankinter-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 8px;
+  }
+
+  header .nav-bankinter-sections a {
+    font-size: 0.9rem;
+  }
+
+  header .nav-bankinter-breadcrumb {
+    min-height: 28px;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    font-size: 0.75rem;
+  }
+}
