@@ -180,6 +180,42 @@
     ]
   },
   {
+    "id": "featured-cta",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "heading",
+        "value": "",
+        "label": "Heading Text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "CTA Link"
+      }
+    ]
+  },
+  {
+    "id": "features-grid-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Card Title"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "value": "",
+        "label": "Description (can include an optional CTA link)",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
@@ -256,6 +292,31 @@
         "value": "",
         "label": "Note Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "page-hero",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Category Label (e.g. Save and Invest)"
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Heading, Description, Bullets & CTA Link",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Hero Image",
+        "multi": false
       }
     ]
   },

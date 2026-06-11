@@ -1,0 +1,111 @@
+/* ─── Features Grid ──────────────────────────────────────────────── */
+
+/* Replica el componente .product-features / .content-box de Bankinter:
+   - Cuadrícula de 3 columnas con tarjetas de característica
+   - Cuadrado de color cyan/yellow alternante en la esquina superior izquierda
+   - Fondo blanco, sin bordes */
+
+.features-grid-container .features-grid-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+/* Cuadrícula de tarjetas — 3 columnas en desktop */
+.features-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+
+/* ─── Tarjeta individual ─────────────────────────────────────────── */
+.features-grid-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+/* Cuadrado decorativo de color (56x56px) */
+.features-grid-square {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+
+.features-grid-card-cyan .features-grid-square {
+  background-color: #b5f0ef;
+}
+
+.features-grid-card-yellow .features-grid-square {
+  background-color: #fed430;
+}
+
+/* Título de la tarjeta */
+.features-grid-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--heading-color, #131313);
+  margin: 0 0 12px;
+  line-height: 1.35;
+}
+
+/* Cuerpo con descripción */
+.features-grid-card-body {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.features-grid-card-body p {
+  margin: 0 0 12px;
+}
+
+.features-grid-card-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enlace CTA dentro de la tarjeta (ej: "fixed term deposit accounts →") */
+.features-grid-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--link-color, #131313);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid currentcolor;
+}
+
+.features-grid-link:hover {
+  text-decoration: none;
+  border-bottom-color: transparent;
+}
+
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+
+/* Tablet: 2 columnas */
+@media (width >= 600px) and (width <= 899px) {
+  .features-grid-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* Móvil: 1 columna */
+@media (width <= 599px) {
+  .features-grid-container .features-grid-wrapper {
+    padding: 0 24px 32px;
+  }
+
+  .features-grid-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .features-grid-card {
+    padding: 20px;
+  }
+}

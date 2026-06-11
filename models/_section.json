@@ -55,7 +55,10 @@
         "rate-highlight",
         "legal-text",
         "hero-banner",
-        "highlights"
+        "highlights",
+        "page-hero",
+        "features-grid",
+        "featured-cta"
       ]
     }
   ]

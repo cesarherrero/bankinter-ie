@@ -20,7 +20,10 @@
       "rate-highlight",
       "legal-text",
       "hero-banner",
-      "highlights"
+      "highlights",
+      "page-hero",
+      "features-grid",
+      "featured-cta"
     ]
   },
   {
@@ -42,6 +45,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "features-grid",
+    "components": [
+      "features-grid-item"
     ]
   },
   {

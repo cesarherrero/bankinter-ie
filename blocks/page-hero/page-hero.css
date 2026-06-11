@@ -1,0 +1,155 @@
+/* ─── Page Hero ──────────────────────────────────────────────────── */
+
+/* Replica el layout .content-block.content-block_cyan de Bankinter:
+   - Texto a la izquierda (~50%)
+   - Imagen a la derecha (~50%) con cuadrado decorativo cyan
+   - Etiqueta de categoría pequeña en uppercase sobre el heading */
+
+.page-hero-container .page-hero-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.page-hero {
+  background-color: var(--background-color, #fff);
+  padding: 48px 0;
+}
+
+.page-hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+
+/* ─── Lado texto (izquierdo) ─────────────────────────────────────── */
+.page-hero-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Etiqueta de categoría: "save and invest" */
+.page-hero-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #888;
+  margin: 0;
+  line-height: 1;
+}
+
+.page-hero-text h1,
+.page-hero-text h2 {
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 700;
+  color: var(--heading-color, #131313);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-hero-text p {
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Lista de beneficios */
+.page-hero-text ul {
+  padding-left: 1.25em;
+  margin: 0;
+}
+
+.page-hero-text ul li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Botón CTA */
+.page-hero-text .btn {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+
+/* ─── Lado imagen (derecho) ──────────────────────────────────────── */
+.page-hero-image {
+  flex: 0 0 46%;
+  max-width: 46%;
+  position: relative;
+  padding-bottom: 16px;
+  padding-left: 16px;
+}
+
+/* Cuadrado decorativo cyan (aparece en el borde inferior izquierdo de la imagen) */
+.page-hero-image::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 90px;
+  height: 90px;
+  background-color: #b5f0ef;
+  z-index: 0;
+}
+
+.page-hero-image picture {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (width <= 599px) {
+  .page-hero {
+    padding: 32px 0;
+  }
+
+  .page-hero-inner {
+    flex-direction: column-reverse;
+    gap: 24px;
+    padding: 0 24px;
+  }
+
+  .page-hero-image {
+    flex: unset;
+    max-width: 100%;
+    width: 100%;
+    padding-bottom: 12px;
+    padding-left: 12px;
+  }
+
+  .page-hero-image::before {
+    width: 60px;
+    height: 60px;
+  }
+
+  .page-hero-text .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (width >= 600px) and (width <= 899px) {
+  .page-hero-inner {
+    gap: 24px;
+  }
+
+  .page-hero-image {
+    flex: 0 0 42%;
+    max-width: 42%;
+  }
+}
