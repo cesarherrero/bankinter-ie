@@ -56,6 +56,18 @@ export default function decorate(block) {
 
   if (picture) {
     imageSide.append(picture);
+  } else if (imgCell) {
+    // AEM renderiza campos reference externos como <a href="url">url</a>
+    // en lugar de <picture>. Convertir el enlace en un <img> directamente.
+    const link = imgCell.querySelector('a');
+    const src = link?.href || link?.textContent?.trim();
+    if (src && /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(src)) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.loading = 'lazy';
+      imageSide.append(img);
+    }
   }
 
   inner.append(textSide, imageSide);
