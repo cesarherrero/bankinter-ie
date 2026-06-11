@@ -1,0 +1,140 @@
+/* ─── Rate Highlight ────────────────────────────────────────────
+   Replica el componente .quality.quality--cyan de Bankinter:
+   - Fondo blanco
+   - Columna izquierda: título H2 + divisor + descripción + CTA
+   - Columna derecha: caja naranja con tasas de depósito
+   - Cuadrado decorativo cyan en la esquina de la caja de tasas
+────────────────────────────────────────────────────────────── */
+
+.rate-highlight-container {
+  padding: 64px 0;
+}
+
+.rate-highlight-inner {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Columna izquierda: contenido ─── */
+.rate-highlight-content {
+  flex: 1;
+  max-width: 540px;
+}
+
+.rate-highlight-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+/* Divisor decorativo: línea corta de acento */
+.rate-highlight-divider {
+  width: 48px;
+  height: 3px;
+  background-color: #1a1a1a;
+  margin-bottom: 24px;
+}
+
+.rate-highlight-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 24px;
+}
+
+/* ─── Botón CTA ─── */
+.rate-highlight-content .btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid #1a1a1a;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.rate-highlight-content .btn:hover {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+/* ─── Columna derecha: caja de tasas ─── */
+.rate-highlight-rates {
+  flex: 0 0 auto;
+  position: relative;
+  background-color: #ff821c; /* Naranja Bankinter */
+  color: #fff;
+  padding: 40px 48px;
+  min-width: 260px;
+  z-index: 0;
+}
+
+/* Cuadrado decorativo cyan en la esquina inferior derecha */
+.rate-highlight-rates::after {
+  content: '';
+  position: absolute;
+  bottom: -24px;
+  right: -24px;
+  width: 80px;
+  height: 80px;
+  background-color: #00b4c5; /* Cyan Bankinter */
+  z-index: -1;
+}
+
+/* Valores de tasa: grandes y destacados */
+.rate-highlight-rates h3,
+.rate-highlight-rates strong {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.rate-highlight-rates p {
+  font-size: 1rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+/* Etiqueta de tasa: especificidad mayor que el selector genérico p */
+.rate-highlight-rates p:first-child {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+/* ─── Responsive ─── */
+@media (width <= 899px) {
+  .rate-highlight-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rate-highlight-rates {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .rate-highlight-rates::after {
+    display: none;
+  }
+}
+
+@media (width >= 900px) {
+  .rate-highlight-container {
+    padding: 80px 0;
+  }
+}

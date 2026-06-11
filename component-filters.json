@@ -16,6 +16,9 @@
       "cards",
       "columns",
       "fragment",
+      "home-hero",
+      "rate-highlight",
+      "legal-text",
       "hero-banner",
       "highlights"
     ]
@@ -39,6 +42,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "legal-text",
+    "components": [
+      "legal-note"
     ]
   }
 ]
