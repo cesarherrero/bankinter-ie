@@ -13,7 +13,6 @@
 
 .hero-banner {
   background-color: #fff;
-  padding-bottom: 28px;
 }
 
 .hero-banner-inner {
@@ -56,9 +55,7 @@
   display: block;
 }
 
-/* Cuadrado decorativo en el borde inferior de la columna imagen
-   (replica banner-dist__square: left:104px, bottom:-20px, 104x104px, #ff821c)
-   Usamos #fed430 para mayor contraste con el naranja del fondo */
+/* Cuadrado decorativo en el borde inferior de la columna imagen */
 .hero-banner-image::after {
   content: '';
   position: absolute;
@@ -80,7 +77,7 @@
   padding: 64px 72px;
 }
 
-/* h1 = etiqueta descriptor "SUPPORT" — pequeña, uppercase, gris */
+/* h1 = etiqueta descriptor — pequeña, uppercase, gris */
 .hero-banner-text h1 {
   font-size: 0.75rem;
   font-weight: 400;
@@ -91,7 +88,15 @@
   line-height: 1;
 }
 
-/* p = titular principal — grande y bold, replicando la caja de texto del original */
+.hero-banner-text h2 {
+  font-size: clamp(22px, 2.8vw, 36px);
+  font-weight: 700;
+  color: var(--text-color, #131313);
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+/* p = titular principal — grande y bold */
 .hero-banner-text p {
   font-size: clamp(28px, 3.2vw, 40px);
   font-weight: 700;
@@ -147,31 +152,113 @@
 }
 
 
-/* ─── Text-only variant (sin imagen) ──── */
+/* ─── Text-only variant (sin imagen, ej: "Ready to get started") ──── */
+.hero-banner-text-only {
+  /* Franja naranja izquierda como acento de marca */
+  border-left: 6px solid #ff821c;
+  background-color: #fafafa;
+}
+
 .hero-banner-text-only .hero-banner-inner {
   min-height: unset;
-  background-color: #f7f7f7;
 }
 
 .hero-banner-text-only .hero-banner-text {
-  padding: 48px 72px;
-  max-width: 860px;
-  margin: 0 auto;
+  padding: 56px 64px;
+  max-width: 900px;
 }
 
+/* Heading principal */
 .hero-banner-text-only .hero-banner-text h2 {
-  font-size: clamp(22px, 2.5vw, 32px);
+  font-size: clamp(24px, 2.6vw, 36px);
   font-weight: 700;
-  margin: 0 0 16px;
+  color: #131313;
+  margin: 0 0 20px;
+  line-height: 1.2;
+  max-width: 620px;
 }
 
+/* Texto introductorio */
+.hero-banner-text-only .hero-banner-text p:not(.button-container) {
+  font-size: 1rem;
+  color: #555;
+  margin: 0 0 16px;
+  line-height: 1.65;
+  max-width: 560px;
+  font-weight: 400;
+}
+
+/* Lista de requisitos con bullets naranja */
 .hero-banner-text-only .hero-banner-text ul {
-  margin: 0 0 24px;
-  padding-left: 1.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.hero-banner-text-only .hero-banner-text li {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.5;
+  padding-left: 28px;
+  position: relative;
+}
+
+/* Bullet: pequeño cuadrado naranja Bankinter */
+.hero-banner-text-only .hero-banner-text li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff821c;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* CTA: el link en <p class="button-container"> o párrafo suelto */
+.hero-banner-text-only .hero-banner-text p > a,
+.hero-banner-text-only .hero-banner-text .button-container a {
+  display: inline-block;
+  background-color: #ff821c;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  transition: background-color 0.2s ease;
+}
+
+.hero-banner-text-only .hero-banner-text p > a:hover,
+.hero-banner-text-only .hero-banner-text .button-container a:hover {
+  background-color: #e06c0f;
 }
 
 @media (width <= 767px) {
+  .hero-banner-text-only {
+    border-left: none;
+    border-top: 6px solid #ff821c;
+  }
+
   .hero-banner-text-only .hero-banner-text {
-    padding: 32px 24px;
+    padding: 36px 24px;
+  }
+
+  .hero-banner-text-only .hero-banner-text h2 {
+    font-size: 22px;
   }
 }
+
+@media (width >= 768px) and (width <= 1024px) {
+  .hero-banner-text-only .hero-banner-text {
+    padding: 48px 40px;
+  }
+}
+
