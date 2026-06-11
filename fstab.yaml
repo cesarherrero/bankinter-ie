@@ -1,5 +1,7 @@
-mountpoints:
-  /:
-    url: "https://author-p131202-e1277528.adobeaemcloud.com/bin/franklin.delivery/cesarherrero/bankinter-ie/main"
-    type: "markup"
-    suffix: ".html"
+# AEM Author como content source (requiere IMS franklin.delivery configurado en Cloud Manager)
+# Descomentar cuando el endpoint esté operativo:
+# mountpoints:
+#   /:
+#     url: "https://author-p131202-e1277528.adobeaemcloud.com/bin/franklin.delivery/cesarherrero/bankinter-ie/main"
+#     type: "markup"
+#     suffix: ".html"
