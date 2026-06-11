@@ -93,8 +93,8 @@
 }
 
 /* Valores de tasa: grandes y destacados */
-.rate-highlight-rates h3,
-.rate-highlight-rates strong {
+.rate-highlight-rates .rate-highlight-rate-value,
+.rate-highlight-rates .rate-highlight-rate-aer {
   display: block;
   font-size: 2rem;
   font-weight: 800;
@@ -109,7 +109,7 @@
 }
 
 /* Etiqueta de tasa: especificidad mayor que el selector genérico p */
-.rate-highlight-rates p:first-child {
+.rate-highlight-rates .rate-highlight-rate-label {
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 8px;
