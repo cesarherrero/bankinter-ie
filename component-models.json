@@ -296,13 +296,13 @@
     ]
   },
   {
-    "id": "legal-note",
+    "id": "legal-text",
     "fields": [
       {
         "component": "richtext",
-        "name": "text",
+        "name": "content",
         "value": "",
-        "label": "Note Text",
+        "label": "Legal Content (heading + notes)",
         "valueType": "string"
       }
     ]

@@ -52,11 +52,5 @@
     "components": [
       "features-grid-item"
     ]
-  },
-  {
-    "id": "legal-text",
-    "components": [
-      "legal-note"
-    ]
   }
 ]
